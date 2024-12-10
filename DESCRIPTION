@@ -37,7 +37,8 @@ Imports:
     S4Vectors,
     stats,
     stringr,
-    utils
+    utils,
+    ggplot2
 biocViews:
     Epigenetics, 
     DNAMethylation, 

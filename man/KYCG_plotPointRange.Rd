@@ -20,7 +20,7 @@ against the same set of databases
 \examples{
 
 ## pick some big TFBS-overlapping CpG groups
-cg_lists <- KYCG_getDBs("MM285.TFBS")
+cg_lists <- getDBs("MM285.TFBS")
 queries <- cg_lists[(sapply(cg_lists, length) > 40000)]
 result_list <- lapply(queries, testEnrichment,
     "MM285.chromHMM", platform="MM285")

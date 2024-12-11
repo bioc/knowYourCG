@@ -47,6 +47,5 @@ KYCG_plotManhattan makes a manhattan plot to summarize EWAS results
 \examples{
 
 ## see vignette for examples
-sesameDataGet_resetEnv()
 
 }

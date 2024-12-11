@@ -8,9 +8,11 @@
 #' @return grid object
 #' @importFrom stringr str_replace
 #' @importFrom tibble rownames_to_column
+#' @importFrom utils head
 #' @import ggplot2
+#' @import ggrepel
 #' @examples
-#' query <- KYCG_getDBs("MM285.designGroup")[["PGCMeth"]]
+#' query <- getDBs("MM285.designGroup")[["PGCMeth"]]
 #' res <- testEnrichment(query, platform="MM285")
 #' KYCG_plotEnrichAll(res)
 #' 
@@ -72,6 +74,9 @@ KYCG_plotEnrichAll <- function(
 
 #' @importFrom dplyr slice_min
 #' @importFrom dplyr ungroup
+#' @importFrom stringr str_split
+#' @importFrom utils head
+#' @importFrom magrittr %>%
 preparePlotDF <- function(
     df, n, order_by, short_label = FALSE, label_by = "dbname") {
     ## suppress R CMD CHECK no visible binding warning
@@ -213,6 +218,7 @@ KYCG_plotDot <- function(df, y = "-log10(FDR)",
 #' Optional. (Default: 0.05)
 #' @return ggplot volcano plot
 #' @import ggplot2
+#' @import ggrepel
 #' @examples
 #' 
 #' KYCG_plotVolcano(data.frame(
@@ -257,6 +263,7 @@ KYCG_plotVolcano <- function(df, label_by="dbname", alpha=0.05) {
 #' @param n Integer representing the number of top enrichments to report.
 #' Optional. (Default: 10)
 #' @return ggplot lollipop plot
+#' @importFrom utils head
 #' @import ggplot2
 #' @examples
 #' 
@@ -306,10 +313,14 @@ KYCG_plotLollipop <- function(df, label_column="dbname", n=20) {
 #' @param n_label number of datapoints to label
 #' @param label_by column in df to be used as the label (default: dbname)
 #' @return grid
+#' @importFrom utils head
 #' @import ggplot2
+#' @import ggrepel
+#' @importFrom sesameData sesameDataGet
 #' @examples
 #'
 #' library(SummarizedExperiment)
+#' library(sesameData)
 #' df <- rowData(sesameDataGet('MM285.tissueSignature'))
 #' query <- df$Probe_ID[df$branch == "fetal_brain" & df$type == "Hypo"]
 #' results <- testEnrichment(query, "TFBS", platform="MM285")
@@ -358,7 +369,7 @@ KYCG_plotWaterfall <- function(df,
 #' @param result_list one or a list of testEnrichment
 #' @return a grid plot object
 #' @examples
-#' cg_lists <- KYCG_getDBs("MM285.TFBS")
+#' cg_lists <- getDBs("MM285.TFBS")
 #' queries <- cg_lists[(sapply(cg_lists, length) > 40000)]
 #' result_list <- lapply(queries, testEnrichment,
 #'     "MM285.metagene", silent=TRUE, platform="MM285")
@@ -396,8 +407,11 @@ KYCG_plotMetaEnrichment <- function(result_list) {
 #' @param platform if not given and x is a SigDF, will be inferred
 #' the meta features
 #' @importFrom reshape2 melt
+#' @importFrom sesameData sesameDataGet
 #' @return a grid plot object
 #' @examples
+#' library(sesameData)
+#' library(sesame)
 #' sdf <- sesameDataGet("EPIC.1.SigDF")
 #' KYCG_plotMeta(getBetas(sdf))
 #' @export
@@ -411,8 +425,8 @@ KYCG_plotMeta <- function(betas, platform = NULL) {
     }
     stopifnot(!is.null(platform))
 
-    dbs <- KYCG_getDBs(sprintf("%s.metagene", platform))
-    df <- dbStats(betas, dbs, long=TRUE)
+    dbs <- getDBs(sprintf("%s.metagene", platform))
+    df <- dbStats(betas, dbs)
     dflabel <- data.frame(
         ord = as.integer(names(dbs)),
         reg = vapply(dbs, function(x) attr(x, "label"), character(1)))
@@ -437,7 +451,7 @@ KYCG_plotMeta <- function(betas, platform = NULL) {
 #' @examples
 #'
 #' ## pick some big TFBS-overlapping CpG groups
-#' cg_lists <- KYCG_getDBs("MM285.TFBS")
+#' cg_lists <- getDBs("MM285.TFBS")
 #' queries <- cg_lists[(sapply(cg_lists, length) > 40000)]
 
 #' result_list <- lapply(queries, testEnrichment,
@@ -490,10 +504,13 @@ KYCG_plotPointRange <- function(result_list) {
 #' @param col color
 #' @param ylabel y-axis label
 #' @return a ggplot object
+#' @importFrom GenomicRanges seqnames 
+#' @importFrom tibble as_tibble
+#' @import ggrepel
+#' @import sesameData
 #' @examples
 #' 
 #' ## see vignette for examples
-#' sesameDataGet_resetEnv()
 #' 
 #' @export
 KYCG_plotManhattan <- function(
@@ -543,9 +560,11 @@ KYCG_plotManhattan <- function(
 #' @param n_sample number of CpGs to sample
 #' @param n_presence number of overlap to sample for the plot
 #' @return grid object for plot
+#' @importFrom wheatmap WGG
+#' @importFrom wheatmap Beneath
 #' @examples
-#' query <- KYCG_getDBs("KYCG.MM285.designGroup")[["VMR"]]
-#' db <- KYCG_getDBs("MM285.seqContextN", "distToTSS")
+#' query <- getDBs("KYCG.MM285.designGroup")[["VMR"]]
+#' db <- getDBs("MM285.seqContextN", "distToTSS")
 #' res <- testEnrichmentSEA(query, db, prepPlot = TRUE)
 #' KYCG_plotSetEnrichment(res[[1]])
 #' 

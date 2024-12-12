@@ -15,12 +15,20 @@ A tool for functional analysis of DNA methylomes
 
 # Quick Start
 
-knowYourCG is a tool for evaluating the enrichment of CpG probes in different
-methylation feature sets. These features can be categorical 
-(e.g., CpGs located at tissue-specific transcription factors) 
-or continuous (e.g., the local CpG density at a regulatory element). 
-Additionally, the set of CpGs to which the test will be applied can be 
-categorical or continuous as well.
+KnowYourCG is a supervised learning framework designed for the functional 
+analysis of DNA methylation data. Unlike existing tools that focus on genes or 
+genomic intervals, KnowYourCG directly targets CpG dinucleotides, featuring 
+automated supervised screenings of diverse biological and technical influences, 
+including sequence motifs, transcription factor binding, histone modifications, 
+replication timing, cell-type-specific methylation, and trait associations. 
+KnowYourCG addresses the challenges of data sparsity in various methylation 
+datasets, including low-pass Nanopore sequencing, single-cell DNA methylomes, 
+5-hydroxymethylation profiles, spatial DNA methylation maps, and array-based 
+datasets for epigenome-wide association studies and epigenetic clocks. For 
+sequencing based enrichment, please check out our github documentary
+https://zhou-lab.github.io/YAME/.
+
+![Overview of curated CpG knowledgebases used in KnowYourCG for enrichment analysis](./KYCG_schemetic.png)
 
 The set of CpGs tested for enrichment is called the query set, and
 the curated target features are called the database sets. A query set, 

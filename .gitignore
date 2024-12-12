@@ -47,3 +47,5 @@ images
 featureEngineering
 
 .DS_Store
+/doc/
+/Meta/

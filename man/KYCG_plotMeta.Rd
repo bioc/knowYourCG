@@ -20,6 +20,11 @@ a grid plot object
 Plot meta gene or other meta genomic features
 }
 \examples{
+<<<<<<< HEAD
+library(sesameData)
+library(sesame)
+=======
+>>>>>>> github/devel
 sdf <- sesameDataGet("EPIC.1.SigDF")
 KYCG_plotMeta(getBetas(sdf))
 }

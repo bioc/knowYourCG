@@ -33,6 +33,10 @@ create a waterfall plot of log(estimate) given test enrichment
 \examples{
 
 library(SummarizedExperiment)
+<<<<<<< HEAD
+library(sesameData)
+=======
+>>>>>>> github/devel
 df <- rowData(sesameDataGet('MM285.tissueSignature'))
 query <- df$Probe_ID[df$branch == "fetal_brain" & df$type == "Hypo"]
 results <- testEnrichment(query, "TFBS", platform="MM285")

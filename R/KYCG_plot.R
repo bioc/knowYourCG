@@ -8,9 +8,17 @@
 #' @return grid object
 #' @importFrom stringr str_replace
 #' @importFrom tibble rownames_to_column
+<<<<<<< HEAD
+#' @importFrom utils head
+#' @import ggplot2
+#' @import ggrepel
+#' @examples
+#' query <- getDBs("MM285.designGroup")[["PGCMeth"]]
+=======
 #' @import ggplot2
 #' @examples
 #' query <- KYCG_getDBs("MM285.designGroup")[["PGCMeth"]]
+>>>>>>> github/devel
 #' res <- testEnrichment(query, platform="MM285")
 #' KYCG_plotEnrichAll(res)
 #' 
@@ -72,6 +80,12 @@ KYCG_plotEnrichAll <- function(
 
 #' @importFrom dplyr slice_min
 #' @importFrom dplyr ungroup
+<<<<<<< HEAD
+#' @importFrom stringr str_split
+#' @importFrom utils head
+#' @importFrom magrittr %>%
+=======
+>>>>>>> github/devel
 preparePlotDF <- function(
     df, n, order_by, short_label = FALSE, label_by = "dbname") {
     ## suppress R CMD CHECK no visible binding warning
@@ -213,6 +227,10 @@ KYCG_plotDot <- function(df, y = "-log10(FDR)",
 #' Optional. (Default: 0.05)
 #' @return ggplot volcano plot
 #' @import ggplot2
+<<<<<<< HEAD
+#' @import ggrepel
+=======
+>>>>>>> github/devel
 #' @examples
 #' 
 #' KYCG_plotVolcano(data.frame(
@@ -257,6 +275,10 @@ KYCG_plotVolcano <- function(df, label_by="dbname", alpha=0.05) {
 #' @param n Integer representing the number of top enrichments to report.
 #' Optional. (Default: 10)
 #' @return ggplot lollipop plot
+<<<<<<< HEAD
+#' @importFrom utils head
+=======
+>>>>>>> github/devel
 #' @import ggplot2
 #' @examples
 #' 
@@ -306,10 +328,21 @@ KYCG_plotLollipop <- function(df, label_column="dbname", n=20) {
 #' @param n_label number of datapoints to label
 #' @param label_by column in df to be used as the label (default: dbname)
 #' @return grid
+<<<<<<< HEAD
+#' @importFrom utils head
+#' @import ggplot2
+#' @import ggrepel
+#' @importFrom sesameData sesameDataGet
+#' @examples
+#'
+#' library(SummarizedExperiment)
+#' library(sesameData)
+=======
 #' @import ggplot2
 #' @examples
 #'
 #' library(SummarizedExperiment)
+>>>>>>> github/devel
 #' df <- rowData(sesameDataGet('MM285.tissueSignature'))
 #' query <- df$Probe_ID[df$branch == "fetal_brain" & df$type == "Hypo"]
 #' results <- testEnrichment(query, "TFBS", platform="MM285")
@@ -358,7 +391,11 @@ KYCG_plotWaterfall <- function(df,
 #' @param result_list one or a list of testEnrichment
 #' @return a grid plot object
 #' @examples
+<<<<<<< HEAD
+#' cg_lists <- getDBs("MM285.TFBS")
+=======
 #' cg_lists <- KYCG_getDBs("MM285.TFBS")
+>>>>>>> github/devel
 #' queries <- cg_lists[(sapply(cg_lists, length) > 40000)]
 #' result_list <- lapply(queries, testEnrichment,
 #'     "MM285.metagene", silent=TRUE, platform="MM285")
@@ -396,8 +433,16 @@ KYCG_plotMetaEnrichment <- function(result_list) {
 #' @param platform if not given and x is a SigDF, will be inferred
 #' the meta features
 #' @importFrom reshape2 melt
+<<<<<<< HEAD
+#' @importFrom sesameData sesameDataGet
 #' @return a grid plot object
 #' @examples
+#' library(sesameData)
+#' library(sesame)
+=======
+#' @return a grid plot object
+#' @examples
+>>>>>>> github/devel
 #' sdf <- sesameDataGet("EPIC.1.SigDF")
 #' KYCG_plotMeta(getBetas(sdf))
 #' @export
@@ -411,8 +456,13 @@ KYCG_plotMeta <- function(betas, platform = NULL) {
     }
     stopifnot(!is.null(platform))
 
+<<<<<<< HEAD
+    dbs <- getDBs(sprintf("%s.metagene", platform))
+    df <- dbStats(betas, dbs)
+=======
     dbs <- KYCG_getDBs(sprintf("%s.metagene", platform))
     df <- dbStats(betas, dbs, long=TRUE)
+>>>>>>> github/devel
     dflabel <- data.frame(
         ord = as.integer(names(dbs)),
         reg = vapply(dbs, function(x) attr(x, "label"), character(1)))
@@ -437,7 +487,11 @@ KYCG_plotMeta <- function(betas, platform = NULL) {
 #' @examples
 #'
 #' ## pick some big TFBS-overlapping CpG groups
+<<<<<<< HEAD
+#' cg_lists <- getDBs("MM285.TFBS")
+=======
 #' cg_lists <- KYCG_getDBs("MM285.TFBS")
+>>>>>>> github/devel
 #' queries <- cg_lists[(sapply(cg_lists, length) > 40000)]
 
 #' result_list <- lapply(queries, testEnrichment,
@@ -490,10 +544,20 @@ KYCG_plotPointRange <- function(result_list) {
 #' @param col color
 #' @param ylabel y-axis label
 #' @return a ggplot object
+<<<<<<< HEAD
+#' @importFrom GenomicRanges seqnames 
+#' @importFrom tibble as_tibble
+#' @import ggrepel
+#' @import sesameData
+#' @examples
+#' 
+#' ## see vignette for examples
+=======
 #' @examples
 #' 
 #' ## see vignette for examples
 #' sesameDataGet_resetEnv()
+>>>>>>> github/devel
 #' 
 #' @export
 KYCG_plotManhattan <- function(
@@ -543,9 +607,17 @@ KYCG_plotManhattan <- function(
 #' @param n_sample number of CpGs to sample
 #' @param n_presence number of overlap to sample for the plot
 #' @return grid object for plot
+<<<<<<< HEAD
+#' @importFrom wheatmap WGG
+#' @importFrom wheatmap Beneath
+#' @examples
+#' query <- getDBs("KYCG.MM285.designGroup")[["VMR"]]
+#' db <- getDBs("MM285.seqContextN", "distToTSS")
+=======
 #' @examples
 #' query <- KYCG_getDBs("KYCG.MM285.designGroup")[["VMR"]]
 #' db <- KYCG_getDBs("MM285.seqContextN", "distToTSS")
+>>>>>>> github/devel
 #' res <- testEnrichmentSEA(query, db, prepPlot = TRUE)
 #' KYCG_plotSetEnrichment(res[[1]])
 #' 

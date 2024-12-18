@@ -21,8 +21,13 @@ grid object for plot
 Plot Set Enrichment
 }
 \examples{
+<<<<<<< HEAD
+query <- getDBs("KYCG.MM285.designGroup")[["VMR"]]
+db <- getDBs("MM285.seqContextN", "distToTSS")
+=======
 query <- KYCG_getDBs("KYCG.MM285.designGroup")[["VMR"]]
 db <- KYCG_getDBs("MM285.seqContextN", "distToTSS")
+>>>>>>> github/devel
 res <- testEnrichmentSEA(query, db, prepPlot = TRUE)
 KYCG_plotSetEnrichment(res[[1]])
 

@@ -30,11 +30,7 @@ grid object
 plot enrichment test result
 }
 \examples{
-<<<<<<< HEAD
 query <- getDBs("MM285.designGroup")[["PGCMeth"]]
-=======
-query <- KYCG_getDBs("MM285.designGroup")[["PGCMeth"]]
->>>>>>> github/devel
 res <- testEnrichment(query, platform="MM285")
 KYCG_plotEnrichAll(res)
 

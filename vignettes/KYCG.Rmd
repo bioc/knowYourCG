@@ -15,7 +15,7 @@ A tool for functional analysis of DNA methylomes
 
 # Quick Start
 
-KnowYourCG is a supervised learning framework designed for the functional 
+KnowYourCG (KYCG) is a supervised learning framework designed for the functional 
 analysis of DNA methylation data. Unlike existing tools that focus on genes or 
 genomic intervals, KnowYourCG directly targets CpG dinucleotides, featuring 
 automated supervised screenings of diverse biological and technical influences, 
@@ -24,20 +24,18 @@ replication timing, cell-type-specific methylation, and trait associations.
 KnowYourCG addresses the challenges of data sparsity in various methylation 
 datasets, including low-pass Nanopore sequencing, single-cell DNA methylomes, 
 5-hydroxymethylation profiles, spatial DNA methylation maps, and array-based 
-datasets for epigenome-wide association studies and epigenetic clocks. For 
-sequencing based enrichment, please check out our github documentary
-https://zhou-lab.github.io/YAME/.
+datasets for epigenome-wide association studies and epigenetic clocks.
 
-![Overview of curated CpG knowledgebases used in KnowYourCG for enrichment analysis](./KYCG_schemetic.png)
-
-The set of CpGs tested for enrichment is called the query set, and
-the curated target features are called the database sets. A query set, 
-for example, might be the results of a differential methylation analysis or an 
-epigenome-wide association study. We have curated a variety of database sets 
-that represent different categorical and continuous methylation features 
-such as CpGs associated with chromatin states, technical artifacts, 
-gene association and gene expression correlation, transcription factor 
-binding sites, tissue specific methylation, CpG density, etc.
+The input to KYCG is a CpG set (query). The CpG sets can represent differential
+methylation, results from an epigenome-wide association studies, or any sets
+that may be derived from analysis. If **array experiment**, the preferred
+format of the query sets is a character vector of cg-numbers, following the
+standard Infinium array naming nomenclature. If analyzing **sequencing data**,
+the preferred format is a YAME-compressed binary vector of 0 and 1 to indicate
+whether the CpG is in set. This format assume a specific order of CpGs
+following the genomic coordinates. Since it's a coordinate-free approach, the
+reference coordinate is critical. Please refer to the YAME documentation for
+details.  https://zhou-lab.github.io/YAME/.
 
 The following commands prepare the use of knowYourCG. Several database sets are
 retrieved and caching is performed to enable faster access in future 
@@ -83,6 +81,16 @@ head(results_pgc)
 As expected, the PGCMeth group itself appears on the top of the
 list. But one can also find histone H3K9me3, chromHMM `Het` and transcription
 factor `Trim28` binding enriched in this CG group.
+
+# Accessing Knowledgebases
+
+The curated target features are called the knowledgebase sets. We have curated
+a variety of knowledgebases that represent different categorical and continuous
+methylation features such as CpGs associated with chromatin states, technical
+artifacts, gene association and gene expression correlation, transcription
+factor binding sites, tissue specific methylation, CpG density, etc.
+
+<img src="figures/knowledgebases.png" alt="Curated CpG knowledgebases" width="600"/>
 
 # Testing Scenarios
 

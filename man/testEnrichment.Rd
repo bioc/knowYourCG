@@ -55,7 +55,6 @@ res <- testEnrichment(probes, "chromHMM", platform="MM285")
 sesameData::sesameDataGet_resetEnv()
 
 \dontrun{
-library(tibble)
 # Define temporary directory and file URLs
 temp_dir <- tempdir()
 knowledgebase <- file.path(temp_dir, "ChromHMM.20220414.cm")

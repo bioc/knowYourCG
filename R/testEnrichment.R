@@ -29,7 +29,6 @@
 #' sesameData::sesameDataGet_resetEnv()
 #'
 #' \dontrun{
-#' library(tibble)
 #' # Define temporary directory and file URLs
 #' temp_dir <- tempdir()
 #' knowledgebase <- file.path(temp_dir, "ChromHMM.20220414.cm")
@@ -205,7 +204,7 @@ testEnrichmentFisherN <- function(
         p.value = 10**(log10.p.value),
         log10.p.value = log10.p.value,
         test = "Log2(OR)",
-        nQ = nQ, nD = nD, overlap = nDQ,
+        nU = nU, nQ = nQ, nD = nD, overlap = nDQ,
         cf_Jaccard = nDQ / (nD + nQmD),
         cf_MCC = (as.numeric(nDQ) * as.numeric(nUmDQ) - as.numeric(nQmD)
             * as.numeric(nDmQ))/sqrt(as.numeric(nD) * (nU - nD) * nQ * (nU - nQ)),

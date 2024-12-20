@@ -2,12 +2,13 @@ name: "KnowYourCG"
 navbar:
   title: '<a href="http://bioconductor.org/packages/release/bioc/html/knowYourCG.html" class="navbar-left"><img src="./figures/logo.png" height="30" width="150" vspace=15 hspace=5></a>'
   left:
-    - text: "KYCG"
-      icon: fa-home
-      href: KYCG.html
-    - text: "Array"
-      icon: fa-check-circle
-      href: Array.html
-    - text: "Sequencing"
-      icon: fa-paw
+    - text: "Sequencing Data"
+      icon: fa-laptop
       href: Sequencing.html
+    - text: "Array Data"
+      icon: fa-tasks
+      href: Array.html
+    - text: "Continuous Data"
+      icon: fa-sort-numeric-desc
+      href: KYCG.html
+

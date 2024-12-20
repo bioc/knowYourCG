@@ -1,5 +1,5 @@
 ---
-title: "Sequencing Data Analysis"
+title: "Functional Analysis of DNA Meth Sequencing Data"
 shorttitle: "KYCG-SEQ"
 package: knowYourCG
 output: rmarkdown::html_vignette
@@ -46,7 +46,7 @@ details.  https://zhou-lab.github.io/YAME/.
 yame unpack cpg_nocontig.cr | gzip > cpg_nocontig.bed.gz
 ```
 
-First, we will pack the bedfile into a .cx format. If the input bedfile is
+First, we will pack the bedfile into a .cg format. If the input bedfile is
 already sorted, you can start with the intersect step. Check out the [bedtools
 instersect help
 page](https://bedtools.readthedocs.io/en/latest/content/tools/intersect.html)
@@ -61,9 +61,24 @@ bedtools sort -i yourfile.bed | bedtools intersect -a cpg_nocontig.bed.gz -b -
 
 # QUICK START
 
+Download query and knowledgebase datasets:
+
+```bash
+wget "https://github.com/zhou-lab/YAME/raw/refs/heads/main/test/input/single_cell_10_samples.cg"
+wget "https://github.com/zhou-lab/KYCGKB_mm10/raw/refs/heads/main/ChromHMM.20220414.cm"
+```
+
+```R
+
+df = tibble(read.table(text=system("yame summary -m ~/references/mm10/KYCGKB_mm10/stranded/kmer10.20231201.cm /mnt/isilon/zhou_lab/projects/20230727_all_public_WGBS/mm10_stranded/20231201_neuron_MeCP2.cg", intern=TRUE), head=T))
+
+```
+
 # KNOWLEDGEBASES
 
 Whole-genome knowledgebases are available as listed in the following tables.
+
+
 
 # ENRICHMENT TESTING
 

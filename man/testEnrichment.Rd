@@ -2,11 +2,10 @@
 % Please edit documentation in R/testEnrichment.R
 \name{testEnrichment}
 \alias{testEnrichment}
-\title{testEnrichment tests for the enrichment of a set of probes (query set) in
-a number of features (database sets).}
+\title{testEnrichment tests for the enrichment of query in knowledgebase sets}
 \usage{
 testEnrichment(
-  probeIDs,
+  query,
   databases = NULL,
   universe = NULL,
   alternative = "greater",
@@ -16,7 +15,9 @@ testEnrichment(
 )
 }
 \arguments{
-\item{probeIDs}{Vector of probes of interest (e.g., significant probes)}
+\item{query}{For array input, it is a vector of probes of interest
+(e.g., significant differential methylated probes). For sequencing data
+input, it expect the file name for YAME-compressed CG sets.}
 
 \item{databases}{List of vectors corresponding to the database sets of
 interest with associated meta data as an attribute to each element.
@@ -41,8 +42,7 @@ A data frame containing features corresponding to the test estimate,
 p-value, and type of test.
 }
 \description{
-testEnrichment tests for the enrichment of a set of probes (query set) in
-a number of features (database sets).
+testEnrichment tests for the enrichment of query in knowledgebase sets
 }
 \examples{
 
@@ -54,4 +54,20 @@ probes <- df$Probe_ID[df$branch == "B_cell"]
 res <- testEnrichment(probes, "chromHMM", platform="MM285")
 sesameData::sesameDataGet_resetEnv()
 
+\dontrun{
+library(tibble)
+# Define temporary directory and file URLs
+temp_dir <- tempdir()
+knowledgebase <- file.path(temp_dir, "ChromHMM.20220414.cm")
+query <- file.path(temp_dir, "single_cell_10_samples.cg")
+# URLs for the knowledgebase and query files
+knowledgebase_url <- "https://github.com/zhou-lab/KYCGKB_mm10/raw/refs/heads/main/ChromHMM.20220414.cm"
+query_url <- "https://github.com/zhou-lab/YAME/raw/refs/heads/main/test/input/single_cell_10_samples.cg"
+# Download the files
+download.file(knowledgebase_url, destfile = knowledgebase)
+download.file(query_url, destfile = query)
+# Confirm file download
+list.files(temp_dir)
+res = testEnrichment(query, knowledgebase)
+}
 }

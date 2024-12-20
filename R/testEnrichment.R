@@ -1,7 +1,8 @@
-#' testEnrichment tests for the enrichment of a set of probes (query set) in
-#' a number of features (database sets).
+#' testEnrichment tests for the enrichment of query in knowledgebase sets
 #'
-#' @param probeIDs Vector of probes of interest (e.g., significant probes)
+#' @param query For array input, it is a vector of probes of interest
+#' (e.g., significant differential methylated probes). For sequencing data
+#' input, it expect the file name for YAME-compressed CG sets.
 #' @param databases List of vectors corresponding to the database sets of
 #' interest with associated meta data as an attribute to each element.
 #' Optional. (Default: NA)
@@ -27,51 +28,86 @@
 #' res <- testEnrichment(probes, "chromHMM", platform="MM285")
 #' sesameData::sesameDataGet_resetEnv()
 #'
+#' \dontrun{
+#' library(tibble)
+#' # Define temporary directory and file URLs
+#' temp_dir <- tempdir()
+#' knowledgebase <- file.path(temp_dir, "ChromHMM.20220414.cm")
+#' query <- file.path(temp_dir, "single_cell_10_samples.cg")
+#' # URLs for the knowledgebase and query files
+#' knowledgebase_url <- "https://github.com/zhou-lab/KYCGKB_mm10/raw/refs/heads/main/ChromHMM.20220414.cm"
+#' query_url <- "https://github.com/zhou-lab/YAME/raw/refs/heads/main/test/input/single_cell_10_samples.cg"
+#' # Download the files
+#' download.file(knowledgebase_url, destfile = knowledgebase)
+#' download.file(query_url, destfile = query)
+#' # Confirm file download
+#' list.files(temp_dir)
+#' res = testEnrichment(query, knowledgebase)
+#' }
 #' @export
 testEnrichment <- function(
-        probeIDs, databases = NULL, universe = NULL, alternative = "greater",
+        query, databases = NULL, universe = NULL, alternative = "greater",
         include_genes = FALSE, platform = NULL, silent = FALSE) {
 
-    platform <- queryCheckPlatform(platform, probeIDs, silent = silent)
-
-    if (is.null(databases)) {
-        dbs <- c(getDBs(listDBGroups( # by default, all dbs + gene
-            platform, type="categorical")$Title, silent = silent))
-    } else if (is.character(databases)) {
-        dbs <- getDBs(databases, platform = platform, silent = silent)
+    if (length(query) == 1 && !grepl(query, "^c[gh]") &&
+        !grepl(query, "rs") && is.null(platform)) {
+        res <- testEnrichment2(query, databases, universe_fn = universe,
+            alternative = alternative)
     } else {
-        dbs <- databases
+        platform <- queryCheckPlatform(platform, query, silent = silent)
+        if (is.null(databases)) {
+            dbs <- c(getDBs(listDBGroups( # by default, all dbs + gene
+                platform, type="categorical")$Title, silent = silent))
+        } else if (is.character(databases)) {
+            dbs <- getDBs(databases, platform = platform, silent = silent)
+        } else {
+            dbs <- databases
+        }
+
+        if (include_genes) {
+            dbs <- c(dbs, buildGeneDBs(query, platform, silent = silent))
+        }
+
+        ## there shouldn't be empty databases, but just in case
+        dbs <- dbs[vapply(dbs, length, integer(1)) > 0]
+        if (!silent) {
+            message(sprintf("Testing against %d database(s)...", length(dbs)))
+        }
+
+        if (is.null(universe)) {
+            universe <- inferUniverse(platform)
+        } else { # subset the dbs by universe
+            dbs <- subsetDBs(dbs, universe) }
+
+        res <- do.call(bind_rows, lapply(dbs, function(db) {
+            testEnrichmentFisher(query = query, database = db,
+                universe = universe, alternative = alternative)}))
+        ## adjust p.value after merging
+        res$FDR <- p.adjust(res$p.value, method='fdr')
+        rownames(res) <- NULL
+        ## bind meta data
+        res <- cbind(res, databases_getMeta(dbs))
     }
 
-    if (include_genes) {
-        dbs <- c(dbs, buildGeneDBs(probeIDs, platform, silent = silent))
-    }
-
-    ## there shouldn't be empty databases, but just in case
-    dbs <- dbs[vapply(dbs, length, integer(1)) > 0]
-    if (!silent) {
-        message(sprintf("Testing against %d database(s)...", length(dbs)))
-    }
-
-    if (is.null(universe)) {
-        universe <- inferUniverse(platform)
-    } else { # subset the dbs by universe
-        dbs <- subsetDBs(dbs, universe) }
-
-    res <- do.call(bind_rows, lapply(dbs, function(db) {
-        testEnrichmentFisher(query = probeIDs, database = db,
-                             universe = universe, alternative = alternative)}))
-
-    ## adjust p.value after merging
-    res$FDR <- p.adjust(res$p.value, method='fdr')
-    rownames(res) <- NULL
-
-    ## bind meta data
-    res <- cbind(res, databases_getMeta(dbs))
     res[order(res$log10.p.value, -abs(res$estimate)), ]
 }
 
+## Test enrichment from YAME-compressed CG sets
+testEnrichment2 <- function(
+    query_fn, knowledgebase_fn, universe_fn=NULL, alternative="greater") {
 
+
+    args <- c("summary", "-m", knowledgebase_fn, query_fn)
+    yame_result <- system2("yame", args, stdout = TRUE, stderr = TRUE)
+    
+    ## command <- paste("yame summary -m", knowledgebase_fn, query_fn)
+    ## yame_result <- system(command, intern = TRUE)
+    df <- tibble::as_tibble(read.table(
+        text = paste(yame_result, collapse = "\n"), header = TRUE))
+    res <- cbind(df, testEnrichmentFisherN(
+        nD = df$N_mask, nQ = df$N_query, nDQ = df$N_overlap, nU = df$N_univ))
+    res <- res[!is.na(res$Mask),]
+}
 
 #' Aggregate test enrichment results
 #'
@@ -130,8 +166,7 @@ testEnrichmentFisher <- function(query, database, universe,
     nU <- length(universe)
 
     testEnrichmentFisherN(nD, nQ, nDQ, nU, alternative = alternative)
-}
-
+}    
 
 testEnrichmentFisherN <- function(
         nD, nQ, nDQ, nU, alternative = "greater") {
@@ -172,12 +207,12 @@ testEnrichmentFisherN <- function(
         test = "Log2(OR)",
         nQ = nQ, nD = nD, overlap = nDQ,
         cf_Jaccard = nDQ / (nD + nQmD),
+        cf_MCC = (as.numeric(nDQ) * as.numeric(nUmDQ) - as.numeric(nQmD)
+            * as.numeric(nDmQ))/sqrt(as.numeric(nD) * (nU - nD) * nQ * (nU - nQ)),
         cf_overlap = nDQ / pmin(nD, nQ), # Szymkiewicz–Simpson
         cf_NPMI = (log2(nD)+log2(nQ)-2*log2(nU))/(log2(nDQ)-log2(nU))-1,
         cf_SorensenDice = 2 * nDQ/(nD + nQ))
 }
-
-
 
 #' build gene-probe association database
 #'

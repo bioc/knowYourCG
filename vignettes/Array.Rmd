@@ -25,6 +25,9 @@ enrichment tests. We can perform this analysis using the
 ```buildGeneDBs()``` function.
 
 ```{r ky16, fig.width=7, fig.height=6, echo=TRUE, warning=FALSE, message=FALSE}
+library(knowYourCG)
+library(sesameData)
+library(SummarizedExperiment)
 query <- names(sesameData_getProbesByGene("Dnmt3a", "MM285"))
 results <- testEnrichment(query, 
     buildGeneDBs(query, max_distance=100000, platform="MM285"),

@@ -7,13 +7,13 @@ fig_width: 6
 fig_height: 5
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{"1. Quick Start"}
+  %\VignetteIndexEntry{"1. Introduction to KnowYourCG"}
   %\VignetteEncoding{UTF-8}
 ---
 
 A tool for functional analysis of DNA methylomes
 
-# Quick Start
+# Introduction
 
 KnowYourCG (KYCG) is a supervised learning framework designed for the functional 
 analysis of DNA methylation data. Unlike existing tools that focus on genes or 

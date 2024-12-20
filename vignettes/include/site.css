@@ -5,7 +5,7 @@ h1 .header-section-number::after {
   content: ".";
 }
 th {
-    background-color: #336699;
+    background-color: #3e3f3a;
     color: white;
 }
 tr:nth-child(even) {background-color: #f2f2f2;}

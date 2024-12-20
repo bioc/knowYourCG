@@ -10,5 +10,5 @@ navbar:
       href: Array.html
     - text: "Continuous Data"
       icon: fa-sort-numeric-desc
-      href: KYCG.html
+      href: Continuous.html
 

@@ -46,7 +46,10 @@ Imports:
     magrittr
 biocViews:
     Epigenetics, 
-    DNAMethylation, 
+    DNAMethylation,
+    Sequencing,
+    SingleCell,
+    Spatial,
     MethylationArray
 Suggests: 
     testthat (>= 3.0.0),

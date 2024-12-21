@@ -1,5 +1,5 @@
 ---
-title: "Functional Analysis of DNA Meth Sequencing Data"
+title: "Functional Analysis of DNAm Sequencing Data"
 shorttitle: "KYCG-SEQ"
 package: knowYourCG
 output: rmarkdown::html_vignette
@@ -78,6 +78,7 @@ df = tibble(read.table(text=system("yame summary -m ~/references/mm10/KYCGKB_mm1
 
 Whole-genome knowledgebases are available as listed in the following tables.
 
+https://github.com/zhou-lab/KYCGKB_mm10
 
 
 # ENRICHMENT TESTING

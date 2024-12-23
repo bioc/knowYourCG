@@ -86,10 +86,16 @@ preparePlotDF <- function(
     df1 <- df[df$nD >0,]
     df1$FDR[df1$FDR==0] <- .Machine$double.xmin # cap FDR
 
-    if ("group" %in% colnames(df1) && !short_label) {
-        gp <- sprintf("%s~", vapply(str_split(
-            df1$group, "\\."), function(x) {
-                if(length(x)>3) {x[3]} else {x[1]}}, character(1)))
+    if (!short_label) {
+        if ("group" %in% colnames(df1)) {
+            gp <- sprintf("%s~", vapply(str_split(
+                df1$group, "\\."), function(x) {
+                    if(length(x)>3) {x[3]} else {x[1]}}, character(1)))
+        } else if ("MFile" %in% colnames(df1)) {
+            gp <- sprintf("%s~", sub(".cm","",df1$MFile))
+        } else {
+            gp <- ""
+        }
     } else {
         gp <- ""
     }
@@ -98,6 +104,8 @@ preparePlotDF <- function(
         df1$db1 <- paste0(gp, df1[[label_by]])
     } else if ("feat" %in% colnames(df1)) { # genome-wide data
         df1$db1 <- paste0(gp, df1$feat)
+    } else if ("Mask" %in% colnames(df1)) {
+        df1$db1 <- paste0(gp, df1$Mask)
     }
     if (length(unique(df1$db1)) != nrow(df1)) {
         df1 <- df1 %>% group_by(db1) %>% slice_min(

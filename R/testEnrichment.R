@@ -52,6 +52,7 @@ testEnrichment <- function(
         !grepl(query, "rs") && is.null(platform)) {
         res <- testEnrichment2(query, databases, universe_fn = universe,
             alternative = alternative)
+        res$FDR <- p.adjust(res$p.value, method='fdr')
     } else {
         platform <- queryCheckPlatform(platform, query, silent = silent)
         if (is.null(databases)) {

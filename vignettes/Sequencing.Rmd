@@ -31,6 +31,8 @@ following the genomic coordinates. Since it's a coordinate-free approach, the
 reference coordinate is critical. Please refer to the YAME documentation for
 details.  https://zhou-lab.github.io/YAME/.
 
+<img src="figures/workflow.png" alt="KYCG workflow" width="250"/>
+
 # PREPARATION
 
 1. A bed file containing the output significant coordinates from differential
@@ -61,18 +63,23 @@ bedtools sort -i yourfile.bed | bedtools intersect -a cpg_nocontig.bed.gz -b -
 
 # QUICK START
 
-Download query and knowledgebase datasets:
+```{r seq1, fig.width=5, fig.height=5, message=FALSE}
+library(knowYourCG)
 
-```bash
-wget "https://github.com/zhou-lab/YAME/raw/refs/heads/main/test/input/single_cell_10_samples.cg"
-wget "https://github.com/zhou-lab/KYCGKB_mm10/raw/refs/heads/main/ChromHMM.20220414.cm"
+# Download query and knowledgebase datasets:
+temp_dir <- tempdir()
+knowledgebase <- file.path(temp_dir, "ChromHMM.20220414.cm")
+query <- file.path(temp_dir, "single_cell_10_samples.cg")
+knowledgebase_url <- "https://github.com/zhou-lab/KYCGKB_mm10/raw/refs/heads/main/ChromHMM.20220414.cm"
+query_url <- "https://github.com/zhou-lab/YAME/raw/refs/heads/main/test/input/single_cell_10_samples.cg"
+download.file(knowledgebase_url, destfile = knowledgebase)
+download.file(query_url, destfile = query)
+
+# test enrichment
+res = testEnrichment(query, knowledgebase)
+KYCG_plotDot(res)
 ```
 
-```R
-
-df = tibble(read.table(text=system("yame summary -m ~/references/mm10/KYCGKB_mm10/stranded/kmer10.20231201.cm /mnt/isilon/zhou_lab/projects/20230727_all_public_WGBS/mm10_stranded/20231201_neuron_MeCP2.cg", intern=TRUE), head=T))
-
-```
 
 # KNOWLEDGEBASES
 
@@ -128,6 +135,14 @@ background set that is measured in the experiment under different conditions.
 
 ```bash
 yame mask -c query.cg universe.cg | yame summary -m feature.cm - > yourfile.txt
+```
+
+The following is an analysis example in R that explicitly call `yame` in R.
+
+```R
+
+df = tibble(read.table(text=system("yame summary -m ~/references/mm10/KYCGKB_mm10/stranded/kmer10.20231201.cm /mnt/isilon/zhou_lab/projects/20230727_all_public_WGBS/mm10_stranded/20231201_neuron_MeCP2.cg", intern=TRUE), head=T))
+
 ```
 
 # SESSION INFO

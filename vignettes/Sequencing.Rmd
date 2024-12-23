@@ -83,16 +83,12 @@ KYCG_plotDot(res)
 
 # KNOWLEDGEBASES
 
-Whole-genome and array knowledgebases are available as listed in the following tables.
+Whole-genome knowledgebases are available as listed in the following tables.
 
 | Assembly | Link |
 |----------|----------|
 | mm10  | https://github.com/zhou-lab/KYCGKB_mm10  |
 | hg38  | https://github.com/zhou-lab/KYCGKB_hg38  |
-| HM450  | https://github.com/zhou-lab/KYCG_knowledgebase_HM450  |
-| EPIC  | https://github.com/zhou-lab/KYCG_knowledgebase_EPIC  |
-| MSA  | https://github.com/zhou-lab/KYCG_knowledgebase_MSA  |
-
 
 # ENRICHMENT TESTING
 

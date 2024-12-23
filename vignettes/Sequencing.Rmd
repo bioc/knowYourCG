@@ -33,7 +33,6 @@ details.  https://zhou-lab.github.io/YAME/.
 
 <img src="figures/workflow.png" alt="KYCG workflow" width="250"/>
 
-
 # QUICK START
 
 ```{r seq1, fig.width=5, fig.height=5, message=FALSE, eval=FALSE}
@@ -53,12 +52,22 @@ res = testEnrichment(query, knowledgebase)
 KYCG_plotDot(res)
 ```
 
-
 # KNOWLEDGEBASES
+
+The curated target features are called the knowledgebase sets. We have curated
+a variety of knowledgebases that represent different categorical and continuous
+methylation features such as CpGs associated with chromatin states, technical
+artifacts, gene association and gene expression correlation, transcription
+factor binding sites, tissue specific methylation, CpG density, etc.
 
 Whole-genome knowledgebases are available as listed in the following tables.
 
-https://github.com/zhou-lab/KYCGKB_mm10
+| Assembly | Link                                    |
+|----------|-----------------------------------------|
+| mm10     | https://github.com/zhou-lab/KYCGKB_mm10 |
+| hg38     | https://github.com/zhou-lab/KYCGKB_hg38 |
+
+<img src="figures/knowledgebases.png" alt="Curated CpG knowledgebases" width="600"/>
 
 # PREPARATION
 

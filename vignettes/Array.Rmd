@@ -1,35 +1,34 @@
 ---
-title: "knowYourCG"
-shorttitle: "KYCG"
+title: "Functional Analysis of DNAm Array Data"
+shorttitle: "KYCG-ARRAY"
 package: knowYourCG
 output: rmarkdown::html_vignette
 fig_width: 6
 fig_height: 5
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{"knowYourCG manual"}
+  %\VignetteIndexEntry{"2. Array Data Analysis"}
   %\VignetteEncoding{UTF-8}
 ---
 
-A tool for functional analysis of DNA methylomes
+KnowYourCG (KYCG) is a supervised learning framework designed for the functional 
+analysis of DNA methylation data. Unlike existing tools that focus on genes or 
+genomic intervals, KnowYourCG directly targets CpG dinucleotides, featuring 
+automated supervised screenings of diverse biological and technical influences, 
+including sequence motifs, transcription factor binding, histone modifications, 
+replication timing, cell-type-specific methylation, and trait associations. 
+KnowYourCG addresses the challenges of data sparsity in various methylation 
+datasets, including low-pass Nanopore sequencing, single-cell DNA methylomes, 
+5-hydroxymethylation profiles, spatial DNA methylation maps, and array-based 
+datasets for epigenome-wide association studies and epigenetic clocks.
 
-# Quick Start
+The input to KYCG is a CpG set (query). The CpG sets can represent differential
+methylation, results from an epigenome-wide association studies, or any sets
+that may be derived from analysis. If **array experiment**, the preferred
+format of the query sets is a character vector of cg-numbers, following the
+standard Infinium array naming nomenclature. 
 
-knowYourCG is a tool for evaluating the enrichment of CpG probes in different
-methylation feature sets. These features can be categorical 
-(e.g., CpGs located at tissue-specific transcription factors) 
-or continuous (e.g., the local CpG density at a regulatory element). 
-Additionally, the set of CpGs to which the test will be applied can be 
-categorical or continuous as well.
-
-The set of CpGs tested for enrichment is called the query set, and
-the curated target features are called the database sets. A query set, 
-for example, might be the results of a differential methylation analysis or an 
-epigenome-wide association study. We have curated a variety of database sets 
-that represent different categorical and continuous methylation features 
-such as CpGs associated with chromatin states, technical artifacts, 
-gene association and gene expression correlation, transcription factor 
-binding sites, tissue specific methylation, CpG density, etc.
+# QUICK START
 
 The following commands prepare the use of knowYourCG. Several database sets are
 retrieved and caching is performed to enable faster access in future 
@@ -76,66 +75,15 @@ As expected, the PGCMeth group itself appears on the top of the
 list. But one can also find histone H3K9me3, chromHMM `Het` and transcription
 factor `Trim28` binding enriched in this CG group.
 
-# Testing Scenarios
+# KNOWLEDGEBASES
 
-There are four testing scenarios depending on the type format of the query set
-and database sets. They are shown with the respective testing scenario in the
-table below. `testEnrichment`, `testEnrichmentSEA` are for Fisher's exact test
-and Set Enrichment Analysis respectively.
+The curated target features are called the knowledgebase sets. We have curated
+a variety of knowledgebases that represent different categorical and continuous
+methylation features such as CpGs associated with chromatin states, technical
+artifacts, gene association and gene expression correlation, transcription
+factor binding sites, tissue specific methylation, CpG density, etc.
 
-```{r ky9, echo = FALSE, results="asis"}
-library(knitr)
-df = data.frame(
-    c("Correlation-based","Set Enrichment Analysis"),
-    c("Set Enrichment Analysis","Fisher's Exact Test")
-)
-colnames(df) <- c("Continuous Database Set", "Discrete Database Set")
-rownames(df) <- c("Continuous Query", "Discrete Query")
-kable(df, caption="Four knowYourCG Testing Scenarios")
-```
-
-# Enrichment Testing
-
-The main work horse function for testing enrichment of a categorical query 
-against categorical databases is the `testEnrichment` function. This function 
-will perform Fisher's exact testing of the query against each database set 
-(one-tailed by default, but two-tailed optionally) and reports overlap and 
-enrichment statistics. 
-
-> **Choice of universe set:** Universe set is the set of all probes for a
-given platform. It can either be passed in as an argument called
-```universeSet``` or the platform name can be passed with argument
-```platform```. If neither of these are supplied, the universe set will be
-inferred from the probes in the query.
-
-```{r ky10, run-test-single, echo=TRUE, eval=TRUE, message=FALSE}
-library(SummarizedExperiment)
-
-## prepare a query
-df <- rowData(sesameDataGet('MM285.tissueSignature'))
-query <- df$Probe_ID[df$branch == "fetal_brain" & df$type == "Hypo"]
-
-results <- testEnrichment(query, "TFBS", platform="MM285")
-results %>% dplyr::filter(overlap>10) %>% head
-
-## prepare another query
-query <- df$Probe_ID[df$branch == "fetal_liver" & df$type == "Hypo"]
-results <- testEnrichment(query, "TFBS", platform="MM285")
-results %>% dplyr::filter(overlap>10) %>%
-    dplyr::select(dbname, estimate, test, FDR) %>% head
-```
-
-The output of each test contains multiple variables including: the estimate 
-(fold enrichment), p-value, overlap statistics, type of test,
-as well as the name of the database set and the database group. By default, 
-the results are sorted by -log10 of the of p-value and the fold enrichment.
-
-The ```nQ``` and ```nD``` columns identify the length of the query set and the
-database set, respectively. Often, it's important to examine the extent of
-overlap between the two sets, so that metric is reported as well in the
-```overlap``` column.
-
-# Database Sets
+<img src="figures/knowledgebases.png" alt="Curated CpG knowledgebases" width="600"/>
 
 The success of enrichment testing depends on the availability of
 biologically-relevant databases. To reflect the biological meaning of databases
@@ -180,7 +128,46 @@ can be faster thanks to the sesameData [in-memory
 caching](https://tinyurl.com/2wh9tyzk), if the corresponding database has been
 loaded.
 
-# Query Set(s)
+# ENRICHMENT TESTING
+
+The main work horse function for testing enrichment of a categorical query 
+against categorical databases is the `testEnrichment` function. This function 
+will perform Fisher's exact testing of the query against each database set 
+(one-tailed by default, but two-tailed optionally) and reports overlap and 
+enrichment statistics. 
+
+> **Choice of universe set:** Universe set is the set of all probes for a
+given platform. It can either be passed in as an argument called
+```universeSet``` or the platform name can be passed with argument
+```platform```. If neither of these are supplied, the universe set will be
+inferred from the probes in the query.
+
+```{r ky10, run-test-single, echo=TRUE, eval=TRUE, message=FALSE}
+library(SummarizedExperiment)
+
+## prepare a query
+df <- rowData(sesameDataGet('MM285.tissueSignature'))
+query <- df$Probe_ID[df$branch == "fetal_brain" & df$type == "Hypo"]
+
+results <- testEnrichment(query, "TFBS", platform="MM285")
+results %>% dplyr::filter(overlap>10) %>% head
+
+## prepare another query
+query <- df$Probe_ID[df$branch == "fetal_liver" & df$type == "Hypo"]
+results <- testEnrichment(query, "TFBS", platform="MM285")
+results %>% dplyr::filter(overlap>10) %>%
+    dplyr::select(dbname, estimate, test, FDR) %>% head
+```
+
+The output of each test contains multiple variables including: the estimate 
+(fold enrichment), p-value, overlap statistics, type of test,
+as well as the name of the database set and the database group. By default, 
+the results are sorted by -log10 of the of p-value and the fold enrichment.
+
+The ```nQ``` and ```nD``` columns identify the length of the query set and the
+database set, respectively. Often, it's important to examine the extent of
+overlap between the two sets, so that metric is reported as well in the
+```overlap``` column.
 
 A query set represents probes of interest. It may either be in the form of a
 character vector where the values correspond to probe IDs or a named numeric
@@ -201,7 +188,7 @@ head(query)
 This query set represents hypomethylated probes in Mouse B-cells from the MM285
 platform. This specific query set has 168 probes.
 
-# Gene Enrichment
+# GENE LINK & ENRICHMENT
 
 A special case of set enrichment is to test whether CpGs are associated with
 specific genes. Automating the enrichment test process only works when the
@@ -213,6 +200,9 @@ enrichment tests. We can perform this analysis using the
 ```buildGeneDBs()``` function.
 
 ```{r ky16, fig.width=7, fig.height=6, echo=TRUE, warning=FALSE, message=FALSE}
+library(knowYourCG)
+library(sesameData)
+library(SummarizedExperiment)
 query <- names(sesameData_getProbesByGene("Dnmt3a", "MM285"))
 results <- testEnrichment(query, 
     buildGeneDBs(query, max_distance=100000, platform="MM285"),
@@ -237,9 +227,6 @@ results[,main_stats] %>%
     head()
 ```
 
-
-# GO/Pathway Enrichment
-
 One can get all the genes associated with a probe set and test the 
 Gene Ontology of the probe-associated genes using the ```testGO()``` function, 
 which internally utilizes [g:Profiler2](https://biit.cs.ut.ee/gprofiler/gost) 
@@ -254,7 +241,7 @@ head(res$result)
 ```
 
 
-# Genomic Proximity Testing
+# GENOMIC PROXIMITY
 
 Sometimes it may be of interest whether a query set of probes share close 
 genomic proximity. Co-localization may suggest co-regulation or co-occupancy 
@@ -270,57 +257,7 @@ res <- testProbeProximity(probeIDs=probes)
 head(res)
 ```
 
-# Set Enrichment Analysis
-
-The query may be a named continuous vector. In that case, either a gene
-enrichment score will be calculated (if the database is discrete) or a Spearman
-correlation will be calculated (if the database is continuous as well). The
-three other cases are shown below using biologically relevant examples.
-
-To display this functionality, let's load two numeric database sets
-individually. One is a database set for CpG density and the other is a database
-set corresponding to the distance of the nearest transcriptional start site
-(TSS) to each probe.
-
-```{r ky21, run-test-data, echo=TRUE, eval=TRUE, message=FALSE}
-query <- getDBs("KYCG.MM285.designGroup")[["TSS"]]
-```
-
-```{r ky22, echo=TRUE, eval=TRUE, message=FALSE}
-sesameDataCache(data_titles = c("KYCG.MM285.seqContextN.20210630"))
-res <- testEnrichmentSEA(query, "MM285.seqContextN")
-main_stats <- c("dbname", "test", "estimate", "FDR", "nQ", "nD", "overlap")
-res[,main_stats]
-```
-
-The estimate here is enrichment score.
-
-> **NOTE:** Negative enrichment score suggests enrichment of the categorical
-database with the higher values (in the numerical database). Positive
-enrichment score represent enrichment with the smaller values. As expected, the
-designed TSS CpGs are significantly enriched in smaller TSS distance and higher
-CpG density.
-
-Alternatively one can test the enrichment of a continuous query with discrete
-databases. Here we will use the methylation level from a sample as the query
-and test it against the chromHMM chromatin states.
-
-```{r ky23, warning=FALSE, eval=TRUE,message=FALSE}
-library(sesame)
-sesameDataCache(data_titles = c("MM285.1.SigDF"))
-beta_values <- getBetas(sesameDataGet("MM285.1.SigDF"))
-res <- testEnrichmentSEA(beta_values, "MM285.chromHMM")
-main_stats <- c("dbname", "test", "estimate", "FDR", "nQ", "nD", "overlap")
-res[,main_stats] 
-```
-
-As expected, chromatin states `Tss`, `Enh` has negative enrichment score,
-meaning these databases are associated with small values of the query (DNA
-methylation level). On the contrary, `Het` and `Quies` states are associated 
-with high methylation level.
-
-
-# Session Info
+# SESSION INFO
 
 ```{r}
 sessionInfo()

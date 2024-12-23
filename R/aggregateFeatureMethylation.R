@@ -10,6 +10,7 @@
 #' @param f_min min fraction of non-NA for aggregation function to apply
 #' @param n_min min number of non-NA for aggregation function to apply,
 #' overrides f_min
+#' @param long produce long-form result
 #' @return matrix with samples on the rows and database set on the columns
 #' @import methods
 #' @examples
@@ -22,8 +23,8 @@
 #'
 #' @export
 dbStats <- function(
-        betas, databases, fun = mean, na.rm = TRUE,
-        n_min = NULL, f_min = 0.1) {
+    betas, databases, fun = mean, na.rm = TRUE, n_min = NULL,
+    f_min = 0.1, long = FALSE) {
 
     if (is(betas, "numeric")) { betas <- cbind(sample = betas); }
     if (is.character(databases)) {
@@ -31,8 +32,7 @@ dbStats <- function(
     } else {
         dbs <- databases
     }
-    stats <- do.call(cbind, lapply(names(dbs), function(db_nm) {
-        db <- dbs[[db_nm]]
+    stats <- do.call(cbind, lapply(dbs, function(db) {
         betas1 <- betas[db[db %in% rownames(betas)],,drop=FALSE]
         n_probes <- nrow(betas1)
         if (n_probes == 0) { return(rep(NA, ncol(betas))); }
@@ -46,7 +46,15 @@ dbStats <- function(
         stat1[nacnt < n_min1] <- NA
         stat1
     }))
-    colnames(stats) <- names(dbs)
+    if (!is.null(names(dbs))) {
+        colnames(stats) <- names(dbs)
+    } else { # use attributes instead of names
+        colnames(stats) <- vapply(dbs,
+            function(x) attr(x, "dbname"), character(1))
+    }
     rownames(stats) <- colnames(betas)
+    if (long) {
+        stats <- melt(stats, varnames = c("query", "db"), value.name = "value")
+    }
     stats
 }

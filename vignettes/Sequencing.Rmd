@@ -83,7 +83,7 @@ KYCG_plotDot(res)
 
 # KNOWLEDGEBASES
 
-Whole-genome knowledgebases are available as listed in the following tables.
+Whole-genome and array knowledgebases are available as listed in the following tables.
 
 | Assembly | Link |
 |----------|----------|

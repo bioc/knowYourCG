@@ -49,7 +49,7 @@ download.file(query_url, destfile = query)
 
 # test enrichment
 res = testEnrichment(query, knowledgebase)
-KYCG_plotDot(res)
+KYCG_plotDot(res, short_label=TRUE)
 ```
 
 # KNOWLEDGEBASES
@@ -62,40 +62,38 @@ factor binding sites, tissue specific methylation, CpG density, etc.
 
 Whole-genome knowledgebases are available as listed in the following tables.
 
-| Assembly | Link                                    |
-|----------|-----------------------------------------|
-| mm10     | https://github.com/zhou-lab/KYCGKB_mm10 |
-| hg38     | https://github.com/zhou-lab/KYCGKB_hg38 |
+| Assembly     | Link                                    |
+|--------------|-----------------------------------------|
+| human (hg38) | https://github.com/zhou-lab/KYCGKB_hg38 |
+| mouse (mm10) | https://github.com/zhou-lab/KYCGKB_mm10 |
 
 <img src="figures/knowledgebases.png" alt="Curated CpG knowledgebases" width="600"/>
 
-# PREPARATION
+# INPUT FORMAT
 
-1. A bed file containing the output significant coordinates from differential
-   analysis
-2. Installed
-   [bedtools](https://bedtools.readthedocs.io/en/latest/content/installation.html)
-   on your system
-3. A reference coordinate bed file (We have provided hg38 and mm10 CpG
-   reference coordinate annotations .cr on KYCG github)
-   [mm10](https://github.com/zhou-lab/KYCGKB_mm10)/[hg38](https://github.com/zhou-lab/KYCGKB_hg38).
+For non-array data, CpG sets (query, knowledgebase, and universe) should be
+formated using YAME. YAME supports binary representation of a set (format "b")
+and optionally with a universe (format "d"). Format "d" can be created from
+format "b" using the `yame mask` function.
+
+If you have a BED-formated data, you can pack it to YAME-"b" format using the
+following pipeline. This pipeline requires
+[BEDTools](https://bedtools.readthedocs.io/en/latest/content/installation.html)
+and a reference coordinate file (YAME-"r") available below:
+
+| Assembly     | Link                                                                        |
+|--------------|-----------------------------------------------------------------------------|
+| human (hg38) | https://github.com/zhou-lab/KYCGKB_hg38/raw/refs/heads/main/cpg_nocontig.cr |
+| mouse (mm10) | https://github.com/zhou-lab/KYCGKB_mm10/raw/refs/heads/main/cpg_nocontig.cr |
 
 ```bash
-yame unpack cpg_nocontig.cr | gzip > cpg_nocontig.bed.gz
+yame unpack cpg_nocontig.cr | bedtools intersect -a - -b [your_input.bed] -c -sorted |
+  cut -f4 | yame pack -fb - > [your_input.cg]
 ```
 
-First, we will pack the bedfile into a .cg format. If the input bedfile is
-already sorted, you can start with the intersect step. Check out the [bedtools
-instersect help
-page](https://bedtools.readthedocs.io/en/latest/content/tools/intersect.html)
+The above assumes your input is already sorted. Check out the [bedtools
+instersect](https://bedtools.readthedocs.io/en/latest/content/tools/intersect.html)
 if you encounter any problems at this step.
-
-```bash
-
-bedtools sort -i yourfile.bed | bedtools intersect -a cpg_nocontig.bed.gz -b -
--sorted -c | cut -f4 | yame pack -fb - > yourfile.cg
-
-```
 
 # ENRICHMENT TESTING
 
@@ -149,7 +147,6 @@ yame mask -c query.cg universe.cg | yame summary -m feature.cm - > yourfile.txt
 The following is an analysis example in R that explicitly call `yame` in R.
 
 ```R
-
 df = tibble(read.table(text=system("yame summary -m ~/references/mm10/KYCGKB_mm10/stranded/kmer10.20231201.cm /mnt/isilon/zhou_lab/projects/20230727_all_public_WGBS/mm10_stranded/20231201_neuron_MeCP2.cg", intern=TRUE), head=T))
 
 ```

@@ -85,11 +85,12 @@ factor binding sites, tissue specific methylation, CpG density, etc.
 
 Array knowledgebases are available as listed in the following tables.
 
-| Array | Link                                                 |
-|-------|------------------------------------------------------|
-| HM450 | https://github.com/zhou-lab/KYCG_knowledgebase_HM450 |
-| EPIC  | https://github.com/zhou-lab/KYCG_knowledgebase_EPIC  |
-| MSA   | https://github.com/zhou-lab/KYCG_knowledgebase_MSA   |
+| Array          | Link                                                  |
+|----------------|-------------------------------------------------------|
+| MSA            | https://github.com/zhou-lab/KYCG_knowledgebase_MSA    |
+| Human (EPICv2) | https://github.com/zhou-lab/KYCG_knowledgebase_EPICv2 |
+| Human (EPIC)   | https://github.com/zhou-lab/KYCG_knowledgebase_EPIC   |
+| Human (HM450)  | https://github.com/zhou-lab/KYCG_knowledgebase_HM450  |
 
 <img src="figures/knowledgebases.png" alt="Curated CpG knowledgebases" width="600"/>
 

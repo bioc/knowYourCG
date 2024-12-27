@@ -185,7 +185,7 @@ void fmt3_decompress(cdata_t *c, cdata_t *inflated) {
   if (c->unit) inflated->unit = c->unit;
   else inflated->unit = unit; // use inferred max unit if unset
   uint8_t *s = calloc(inflated->unit*n0, sizeof(uint8_t));
-  uint64_t n = 0; uint64_t modified = 0;
+  uint64_t n = 0; // uint64_t modified = 0;
   for (uint64_t i=0; i < c->n; ) {
     if ((c->s[i] & 0x3) == 0) {
       uint64_t l = unpack_value(c->s+i, 2)>>2; // the length is 14 bits, so unit = 2
@@ -194,24 +194,24 @@ void fmt3_decompress(cdata_t *c, cdata_t *inflated) {
     } else if ((c->s[i] & 0x3) == 1) {
       uint64_t M = (c->s[i])>>5;
       uint64_t U = ((c->s[i])>>2) & 0x7;
-      if (inflated->unit == 1) modified += fitMU(&M, &U, 4);
-      else modified += fitMU(&M, &U, inflated->unit<<2);
+      /* if (inflated->unit == 1) modified += fitMU(&M, &U, 4); */
+      /* else modified += fitMU(&M, &U, inflated->unit<<2); */
       f3_pack_mu(s+(n++)*inflated->unit, M, U, inflated->unit);
       i++;
     } else if ((c->s[i] & 0x3) == 2) {
       uint64_t M = unpack_value(c->s+i, 2)>>2;
       uint64_t U = M & ((1ul<<7)-1);
       M >>= 7;
-      if (inflated->unit == 1) modified += fitMU(&M, &U, 4);
-      else modified += fitMU(&M, &U, inflated->unit<<2);
+      /* if (inflated->unit == 1) modified += fitMU(&M, &U, 4); */
+      /* else modified += fitMU(&M, &U, inflated->unit<<2); */
       f3_pack_mu(s+(n++)*inflated->unit, M, U, inflated->unit);
       i += 2;
     } else {
       uint64_t M = unpack_value(c->s+i, 8)>>2;
       uint64_t U = M & ((1ul<<31)-1);
       M >>= 31;
-      if (inflated->unit == 1) modified += fitMU(&M, &U, 4);
-      else modified += fitMU(&M, &U, inflated->unit<<2);
+      /* if (inflated->unit == 1) modified += fitMU(&M, &U, 4); */
+      /* else modified += fitMU(&M, &U, inflated->unit<<2); */
       f3_pack_mu(s+(n++)*inflated->unit, M, U, inflated->unit);
       i += 8;
     }

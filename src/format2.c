@@ -288,11 +288,12 @@ void fmt2_decompress(cdata_t *c, cdata_t *inflated) {
   uint8_t *dec_data = inflated->s + keys_nb + 1;
   uint64_t n = 0;
   for (uint64_t i = 0; i < data_nbyte; ) {
-    uint64_t value = 0; uint8_t *d = data+i;
-    for (uint64_t j = 0; j < inflated->unit; ++j)
-      value |= data[i++] << (8*j);
+    uint8_t *d = data+i;
+    /* uint64_t value = 0;  */
+    /* for (uint64_t j = 0; j < inflated->unit; ++j) */
+    /*   value |= (data[i++] << (8*j)); */
+    /* sum += length; */
     uint64_t length = ((uint64_t) data[i] | (uint64_t) (data[i+1] << 8));
-    sum += length;
     i += 2;
     for ( ; length--; ++n)
       memcpy(dec_data+n*inflated->unit, d, inflated->unit);

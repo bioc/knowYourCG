@@ -244,7 +244,7 @@ cdata_t fmt7_sliceToMask(cdata_t *cr, cdata_t *c_mask) {
 
   row_reader_t rdr = {0};
   uint64_t n = 0;
-  uint64_t i = 0, n_rec = 0;
+  uint64_t i = 0;
   char *chrm = NULL; uint64_t last = 0;
   cdata_t cr2 = {0};
   while (row_reader_next_loc(&rdr, cr)) {
@@ -256,7 +256,6 @@ cdata_t fmt7_sliceToMask(cdata_t *cr, cdata_t *c_mask) {
         last = 0;
       }
       append_loc(rdr.value - last, &(cr2.s), &n);
-      n_rec++;
       last = rdr.value;
     }
     i++;

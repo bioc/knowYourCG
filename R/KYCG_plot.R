@@ -198,7 +198,7 @@ KYCG_plotBar <- function(df, y = "-log10(FDR)",
 #'   overlap=as.integer(runif(10,0,30)), group="g", dbname=seq_len(10)))
 #' @export
 KYCG_plotDot <- function(df, y = "-log10(FDR)",
-    n = 20, order_by = "FDR", title = "Enriched Databases",
+    n = 20, order_by = "FDR", title = "Enriched Knowledgebases",
     label_by = "dbname", size_by = "overlap", color_by = "estimate",
     short_label = FALSE) {
 

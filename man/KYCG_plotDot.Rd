@@ -9,7 +9,7 @@ KYCG_plotDot(
   y = "-log10(FDR)",
   n = 20,
   order_by = "FDR",
-  title = "Enriched Databases",
+  title = "Enriched Knowledgebases",
   label_by = "dbname",
   size_by = "overlap",
   color_by = "estimate",

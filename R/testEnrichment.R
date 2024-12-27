@@ -92,23 +92,6 @@ testEnrichment <- function(
     res[order(res$log10.p.value, -abs(res$estimate)), ]
 }
 
-## Test enrichment from YAME-compressed CG sets
-testEnrichment2 <- function(
-    query_fn, knowledgebase_fn, universe_fn=NULL, alternative="greater") {
-
-
-    args <- c("summary", "-m", knowledgebase_fn, query_fn)
-    yame_result <- system2("yame", args, stdout = TRUE, stderr = TRUE)
-    
-    ## command <- paste("yame summary -m", knowledgebase_fn, query_fn)
-    ## yame_result <- system(command, intern = TRUE)
-    df <- tibble::as_tibble(read.table(
-        text = paste(yame_result, collapse = "\n"), header = TRUE))
-    res <- cbind(df, testEnrichmentFisherN(
-        nD = df$N_mask, nQ = df$N_query, nDQ = df$N_overlap, nU = df$N_univ))
-    res <- res[!is.na(res$Mask),]
-}
-
 #' Aggregate test enrichment results
 #'
 #' @param result_list a list of results from testEnrichment

@@ -146,7 +146,7 @@ cdata_t* fmt2_read_raw(char *fname, int verbose) {
   memcpy(c->s + pos, data, data_n*sizeof(uint64_t));
 
   if (verbose) {
-    fprintf(stderr, "[%s:%d] Vector of length %lu loaded\n", __func__, __LINE__, data_n);
+    fprintf(stderr, "[%s:%d] Vector of length %llu loaded\n", __func__, __LINE__, data_n);
     fflush(stderr);
   }
 

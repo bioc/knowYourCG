@@ -29,7 +29,7 @@ cdata_t* fmt0_read_raw(char *fname, int verbose) {
   free(line);
   wzclose(fh);
   if (verbose) {
-    fprintf(stderr, "[%s:%d] Vector of length %lu loaded\n", __func__, __LINE__, n);
+    fprintf(stderr, "[%s:%d] Vector of length %llu loaded\n", __func__, __LINE__, n);
     fflush(stderr);
   }
   cdata_t *c = calloc(sizeof(cdata_t),1);
@@ -117,7 +117,7 @@ cdata_t* fmt1_read_raw(char *fname, int verbose) {
   free(line);
   wzclose(fh);
   if (verbose) {
-    fprintf(stderr, "[%s:%d] Vector of length %lu loaded\n", __func__, __LINE__, n);
+    fprintf(stderr, "[%s:%d] Vector of length %llu loaded\n", __func__, __LINE__, n);
     fflush(stderr);
   }
   cdata_t *c = calloc(sizeof(cdata_t),1);
@@ -193,7 +193,7 @@ cdata_t* fmt4_read_raw(char *fname, int verbose) {
   free(line);
   wzclose(fh);
   if (verbose) {
-    fprintf(stderr, "[%s:%d] Vector of length %lu loaded\n", __func__, __LINE__, n);
+    fprintf(stderr, "[%s:%d] Vector of length %llu loaded\n", __func__, __LINE__, n);
     fflush(stderr);
   }
   cdata_t *c = calloc(sizeof(cdata_t),1);
@@ -285,7 +285,7 @@ cdata_t* fmt5_read_raw(char *fname, int verbose) {
   free(line);
   wzclose(fh);
   if (verbose) {
-    fprintf(stderr, "[%s:%d] Vector of length %lu loaded\n", __func__, __LINE__, n);
+    fprintf(stderr, "[%s:%d] Vector of length %llu loaded\n", __func__, __LINE__, n);
     fflush(stderr);
   }
   cdata_t *c = calloc(sizeof(cdata_t),1);

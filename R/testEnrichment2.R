@@ -10,6 +10,8 @@
 #'
 #' @param query_fn File path to query
 #' @param knowledge_fn File path to knowledgebase
+#' @param universe_fn optional file path to universe
+#' @param alternative greater, less
 #' @return A single concatenated string.
 #' @useDynLib knowYourCG, .registration = TRUE
 #' @export

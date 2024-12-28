@@ -10,7 +10,7 @@
 #include "snames.h"
 #include "kstring.h"
 
-static int usage() {
+static int usage(void) {
   fprintf(stderr, "\n");
   fprintf(stderr, "Usage: yame summary [options] <query.cm>\n");
   fprintf(stderr, "Query should be of format 0,1,2,3, can be a multi-sample set.\n");

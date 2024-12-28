@@ -284,11 +284,12 @@ void fmt2_decompress(cdata_t *c, cdata_t *inflated) {
   inflated->s[keys_nb] = '\0';  // NULL separator
 
   // Have dec_data point to the data part
-  uint64_t sum = 0;
+  /* uint64_t sum = 0; */
   uint8_t *dec_data = inflated->s + keys_nb + 1;
   uint64_t n = 0;
   for (uint64_t i = 0; i < data_nbyte; ) {
     uint8_t *d = data+i;
+    i += inflated->unit;
     /* uint64_t value = 0;  */
     /* for (uint64_t j = 0; j < inflated->unit; ++j) */
     /*   value |= (data[i++] << (8*j)); */

@@ -81,7 +81,7 @@ typedef struct {
 KHASH_MAP_INIT_INT64(cache, cache_t)
 #endif
 
-static inline int ed_is_big()
+static inline int ed_is_big(void)
 {
 	long one= 1;
 	return !(*((char *)(&one)));
@@ -106,7 +106,7 @@ static inline void packInt32(uint8_t *buffer, uint32_t value)
 	buffer[3] = value >> 24;
 }
 
-static BGZF *bgzf_read_init()
+static BGZF *bgzf_read_init(void)
 {
 	BGZF *fp;
 	fp = (BGZF*)calloc(1, sizeof(BGZF));

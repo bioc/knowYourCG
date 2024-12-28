@@ -184,7 +184,7 @@ void writeIndex(FILE *fp, index_t *idx) {
   clean_index_pairs(pairs, n);
 }
   
-static int usage() {
+static int usage(void) {
   fprintf(stderr, "\n");
   fprintf(stderr, "Usage: yame index [options] <in.cx>\n");
   fprintf(stderr, "The index file name default to <in.cx>.idx\n");

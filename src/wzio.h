@@ -23,10 +23,9 @@ static inline gzFile wzopen(char *path, int fatal) {
   } else {
     fh = gzopen(path, "r");
     if (!fh && fatal) {
-      fprintf(stderr, "[%s:%d] Fatal, cannot open file: %s\n",
+      REprintf("[%s:%d] Fatal, cannot open file: %s\n",
               __func__, __LINE__, path);
-      fflush(stderr);
-      exit(1);
+      error("Abort.");
     }
   }
   return fh;
@@ -41,17 +40,14 @@ static inline gzFile wzopen(char *path, int fatal) {
  * @throws An error message and exits the program if the file cannot be opened.
  */
 static inline FILE *wzopen_out(char *path) {
-   FILE *out;
+   FILE *out = NULL;
    if (path) {
       out = fopen(path, "w");
       if (!out) {
-         fprintf(stderr, "[%s:%d] Fatal, cannot open file: %s\n",
+         REprintf("[%s:%d] Fatal, cannot open file: %s\n",
                  __func__, __LINE__, path);
-         fflush(stderr);
-         exit(1);
+         error("Abort.");
       }
-   } else {
-      out = stdout;
    }
    return out;
 }
@@ -70,9 +66,8 @@ static inline FILE *wzopen_out(char *path) {
 static inline int gzFile_read_line(gzFile fh, char **s) {
 
   if (s == NULL) {
-    fprintf(stderr, "[%s:%d] Fatal, empty string construct.\n", __func__, __LINE__);
-    fflush(stderr);
-    exit(1);
+    REprintf("[%s:%d] Fatal, empty string construct.\n", __func__, __LINE__);
+    error("Abort.");
   }
   
   /* reset s */
@@ -236,9 +231,8 @@ static inline void line_get_fields2(
     *nfields = nfields_;
     *fields = calloc(*nfields, sizeof(char*));
   } else if (*nfields != nfields_) {
-    fprintf(stderr, "Wrong field number %d (expecting %d).\n", nfields_, *nfields);
-    fflush(stderr);
-    exit(1);
+    REprintf("Wrong field number %d (expecting %d).\n", nfields_, *nfields);
+    error("Abort.");
   }
 
   *aux = realloc(*aux, (strlen(line) + 1) * sizeof(char));

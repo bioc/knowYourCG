@@ -1,6 +1,7 @@
 #ifndef _CFILE_H
 #define _CFILE_H
 
+#include <R.h>
 #include "cdata.h"
 #include "snames.h"
 #include "index.h"

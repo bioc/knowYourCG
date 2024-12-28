@@ -25,8 +25,8 @@ cfile_t open_cfile(char *fname) { /* for read */
     cf.fh = bgzf_open(fname, "r");
   }
   if (cf.fh == NULL) {
-    fprintf(stderr, "Error opening file %s\n", fname);
-    exit(1);
+    REprintf("Error opening file %s\n", fname);
+    error("Abort.");
   }
   cf.n = 0;
   return cf;
@@ -103,17 +103,15 @@ cdata_v* read_cdata_with_indices(cfile_t *cf, const int64_t* indices, int n) {
   for (int i = 0; i < n; i++) {
     int64_t index = indices[i];
     if (index < 0) {
-      fprintf(stderr, "\n");
-      fprintf(stderr, "[%s:%d] Index is negative.\n", __func__, __LINE__);
-      fflush(stderr);
-      exit(1);
+      REprintf("\n");
+      REprintf("[%s:%d] Index is negative.\n", __func__, __LINE__);
+      error("Abort.");
     }
 
     // Reposition the file pointer using bgzf_seek
     if (bgzf_seek(cf->fh, index, SEEK_SET) != 0) {
-      fprintf(stderr, "[%s:%d] Cannot seek input.\n", __func__, __LINE__);
-      fflush(stderr);
-      exit(1);
+      REprintf("[%s:%d] Cannot seek input.\n", __func__, __LINE__);
+      error("Abort.");
     }
     read_cdata2(cf, &c);
     if (c.n > 0) {
@@ -133,9 +131,8 @@ cdata_v* read_cdata_with_snames(cfile_t *cf, index_t *idx, snames_t *snames) {
   for (int i = 0; i < snames->n; i++) {
     indices[i] = getIndex(idx, snames->s[i]);
     if (indices[i] == -1) {
-      fprintf(stderr, "Cannot find sample %s in index.\n", snames->s[i]);
-      fflush(stderr);
-      exit(1);
+      REprintf("Cannot find sample %s in index.\n", snames->s[i]);
+      error("Abort.");
     }
   }
   cdata_v *cs = read_cdata_with_indices(cf, indices, snames->n);
@@ -147,25 +144,25 @@ void cdata_write1(BGZF *fp, cdata_t *c) {
   // Write the signature
   uint64_t sig = CDSIG;
   if (bgzf_write(fp, &sig, sizeof(uint64_t)) < 0) {
-    fprintf(stderr, "Error writing signature to file\n");
+    REprintf( "Error writing signature to file\n");
     return;
   }
 
   // Write the format
   if (bgzf_write(fp, &(c->fmt), sizeof(uint8_t)) < 0) {
-    fprintf(stderr, "Error writing format to file\n");
+    REprintf("Error writing format to file\n");
     return;
   }
 
   // Write the count
   if (bgzf_write(fp, &(c->n), sizeof(uint64_t)) < 0) {
-    fprintf(stderr, "Error writing count to file\n");
+    REprintf("Error writing count to file\n");
     return;
   }
 
   // Write the data
   if (bgzf_write(fp, c->s, cdata_nbytes(c)) < 0) {
-    fprintf(stderr, "Error writing data to file\n");
+    REprintf("Error writing data to file\n");
     return;
   }
 }
@@ -174,18 +171,16 @@ void cdata_write(char *fname_out, cdata_t *c, const char *mode, int verbose) {
 
   if (!c->compressed) cdata_compress(c);  
   BGZF* fp;
-  if (fname_out) fp = bgzf_open2(fname_out, mode);
-  else fp = bgzf_dopen(fileno(stdout), mode);
+  fp = bgzf_open2(fname_out, mode);
   
   if (fp == NULL) {
-    fprintf(stderr, "Error opening file for writing: %s\n", fname_out);
+    REprintf("Error opening file for writing: %s\n", fname_out);
     return;
   }
   cdata_write1(fp, c);
   bgzf_close(fp);
 
   if (verbose) {
-    fprintf(stderr, "[%s:%d] Stored as Format %c\n", __func__, __LINE__, c->fmt);
-    fflush(stderr);
+    REprintf("[%s:%d] Stored as Format %c\n", __func__, __LINE__, c->fmt);
   }
 }

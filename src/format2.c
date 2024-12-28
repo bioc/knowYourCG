@@ -18,9 +18,8 @@ char* f2_get_string(cdata_t *c, uint64_t i) {
   f2_aux_t *aux = (f2_aux_t*) c->aux;
   uint64_t val = f2_get_uint64(c, i);
   if (val >= aux->nk) {
-    fprintf(stderr, "[%s:%d] State data is corrupted.\n", __func__, __LINE__);
-    fflush(stderr);
-    exit(1);
+    REprintf("[%s:%d] State data is corrupted.\n", __func__, __LINE__);
+    error("Abort.");
   }
   return aux->keys[val];
 }
@@ -146,8 +145,7 @@ cdata_t* fmt2_read_raw(char *fname, int verbose) {
   memcpy(c->s + pos, data, data_n*sizeof(uint64_t));
 
   if (verbose) {
-    fprintf(stderr, "[%s:%d] Vector of length %llu loaded\n", __func__, __LINE__, data_n);
-    fflush(stderr);
+    REprintf("[%s:%d] Vector of length %llu loaded\n", __func__, __LINE__, data_n);
   }
 
   free(data);
@@ -191,9 +189,8 @@ static uint64_t fmt2_get_keys_nbytes(cdata_t *c) {
 // c->n is the total nbytes only when compressed
 static uint64_t fmt2_get_data_nbytes(cdata_t *c) {
   if (!c->compressed) {
-    fprintf(stderr, "[%s:%d] Data is uncompressed.\n", __func__, __LINE__);
-    fflush(stderr);
-    exit(1);
+    REprintf("[%s:%d] Data is uncompressed.\n", __func__, __LINE__);
+    error("Abort.");
   }
   uint64_t separator_idx = 0;
   for (uint64_t i = 0; i < c->n; ++i) {
@@ -210,9 +207,8 @@ static uint64_t fmt2_get_data_nbytes(cdata_t *c) {
 // assume c is compressed
 static uint8_t fmt2_get_value_byte(cdata_t *c) {
   if (!c->compressed) {
-    fprintf(stderr, "[%s:%d] Data is uncompressed.\n", __func__, __LINE__);
-    fflush(stderr);
-    exit(1);
+    REprintf("[%s:%d] Data is uncompressed.\n", __func__, __LINE__);
+    error("Abort.");
   }
   uint64_t separator_idx = 0;
   for (uint64_t i = 0; i < c->n; ++i) {
@@ -275,8 +271,8 @@ void fmt2_decompress(cdata_t *c, cdata_t *inflated) {
   inflated->n = keys_nb + dec_data_n * inflated->unit + 1;
   inflated->s = malloc(inflated->n);
   if (inflated->s == NULL) {
-    fprintf(stderr, "Memory allocation failed. Exiting.\n");
-    exit(1);
+    REprintf("Memory allocation failed. Exiting.\n");
+    error("Abort.");
   }
 
   // Copy keys to inflated->s
@@ -307,9 +303,8 @@ void fmt2_decompress(cdata_t *c, cdata_t *inflated) {
 
 void fmt2_set_aux(cdata_t *c) {
   if (c->aux != NULL) {
-    fprintf(stderr, "[%s:%d] Aux data exists.\n", __func__, __LINE__);
-    fflush(stderr);
-    exit(1);
+    REprintf("[%s:%d] Aux data exists.\n", __func__, __LINE__);
+    error("Abort.");
   }
   // Create a keys_t object and allocate memory for s
   f2_aux_t *aux = calloc(1, sizeof(f2_aux_t));

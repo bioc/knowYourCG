@@ -11,22 +11,22 @@
 #include "kstring.h"
 
 static int usage(void) {
-  fprintf(stderr, "\n");
-  fprintf(stderr, "Usage: yame summary [options] <query.cm>\n");
-  fprintf(stderr, "Query should be of format 0,1,2,3, can be a multi-sample set.\n");
-  fprintf(stderr, "\n");
-  fprintf(stderr, "Options:\n");
-  fprintf(stderr, "    -m        Mask feature (.cx) file, can be multi-sample.\n");
-  fprintf(stderr, "              If '-', the whole sample will bed kept in memory, same as -M.\n");
-  fprintf(stderr, "    -M        All masks will be loaded to memory. This save disk IO.\n");
-  fprintf(stderr, "    -u        Optional universe set as a .cx file. If given, the masks and queries are both subset.\n");
-  fprintf(stderr, "    -H        Suppress header printing.\n");
-  fprintf(stderr, "    -q        The backup query file name if the query file name is '-'.\n");
-  fprintf(stderr, "    -F        Use full feature/query file name instead of base name.\n");
-  fprintf(stderr, "    -T        State features always show section names.\n");
-  fprintf(stderr, "    -s        Sample list provided to override the query index file. Only applies to the first query.\n");
-  fprintf(stderr, "    -h        This help.\n");
-  fprintf(stderr, "\n");
+  REprintf("\n");
+  REprintf("Usage: yame summary [options] <query.cm>\n");
+  REprintf("Query should be of format 0,1,2,3, can be a multi-sample set.\n");
+  REprintf("\n");
+  REprintf("Options:\n");
+  REprintf("    -m        Mask feature (.cx) file, can be multi-sample.\n");
+  REprintf("              If '-', the whole sample will bed kept in memory, same as -M.\n");
+  REprintf("    -M        All masks will be loaded to memory. This save disk IO.\n");
+  REprintf("    -u        Optional universe set as a .cx file. If given, the masks and queries are both subset.\n");
+  REprintf("    -H        Suppress header printing.\n");
+  REprintf("    -q        The backup query file name if the query file name is '-'.\n");
+  REprintf("    -F        Use full feature/query file name instead of base name.\n");
+  REprintf("    -T        State features always show section names.\n");
+  REprintf("    -s        Sample list provided to override the query index file. Only applies to the first query.\n");
+  REprintf("    -h        This help.\n");
+  REprintf("\n");
 
   return 1;
 }
@@ -68,9 +68,8 @@ static stats_t* summarize1_queryfmt0(
   } else if (c_mask->fmt <= '1') { // binary mask
 
     if (c_mask->n != c->n) {
-      fprintf(stderr, "[%s:%d] mask (N=%"PRIu64") and query (N=%"PRIu64") are of different lengths.\n", __func__, __LINE__, c_mask->n, c->n);
-      fflush(stderr);
-      exit(1);
+      REprintf("[%s:%d] mask (N=%"PRIu64") and query (N=%"PRIu64") are of different lengths.\n", __func__, __LINE__, c_mask->n, c->n);
+      error("Abort.");
     }
     
     *n_st = 1;
@@ -90,9 +89,8 @@ static stats_t* summarize1_queryfmt0(
   } else if (c_mask->fmt == '6') { // binary mask with universe
 
     if (c_mask->n != c->n) {
-      fprintf(stderr, "[%s:%d] mask (N=%"PRIu64") and query (N=%"PRIu64") are of different lengths.\n", __func__, __LINE__, c_mask->n, c->n);
-      fflush(stderr);
-      exit(1);
+      REprintf("[%s:%d] mask (N=%"PRIu64") and query (N=%"PRIu64") are of different lengths.\n", __func__, __LINE__, c_mask->n, c->n);
+      error("Abort.");
     }
     
     *n_st = 1;
@@ -115,9 +113,8 @@ static stats_t* summarize1_queryfmt0(
   } else if (c_mask->fmt == '2') { // state mask
 
     if (c_mask->n != c->n) {
-      fprintf(stderr, "[%s:%d] mask (N=%"PRIu64") and query (N=%"PRIu64") are of different lengths.\n", __func__, __LINE__, c_mask->n, c->n);
-      fflush(stderr);
-      exit(1);
+      REprintf("[%s:%d] mask (N=%"PRIu64") and query (N=%"PRIu64") are of different lengths.\n", __func__, __LINE__, c_mask->n, c->n);
+      error("Abort.");
     }
     if (!c_mask->aux) fmt2_set_aux(c_mask);
     f2_aux_t *aux = (f2_aux_t*) c_mask->aux;
@@ -127,9 +124,8 @@ static stats_t* summarize1_queryfmt0(
     for (uint64_t i=0; i<c->n; ++i) {
       uint64_t index = f2_get_uint64(c_mask, i);
       if (index >= (*n_st)) {
-        fprintf(stderr, "[%s:%d] State data is corrupted.\n", __func__, __LINE__);
-        fflush(stderr);
-        exit(1);
+        REprintf("[%s:%d] State data is corrupted.\n", __func__, __LINE__);
+        error("Abort.");
       }
       if (FMT0_IN_SET(*c, i)) {
         st[index].n_o++;
@@ -151,9 +147,8 @@ static stats_t* summarize1_queryfmt0(
     }
     
   } else {                      // other masks
-    fprintf(stderr, "[%s:%d] Mask format %c unsupported.\n", __func__, __LINE__, c_mask->fmt);
-    fflush(stderr);
-    exit(1);
+    REprintf("[%s:%d] Mask format %c unsupported.\n", __func__, __LINE__, c_mask->fmt);
+    error("Abort.");
   }
   return st;
 }
@@ -245,9 +240,8 @@ static stats_t* summarize1_queryfmt2(
   } else if (c_mask->fmt == '2') { // state mask
 
     if (c_mask->n != c->n) {
-      fprintf(stderr, "[%s:%d] mask (N=%"PRIu64") and query (N=%"PRIu64") are of different lengths.\n", __func__, __LINE__, c_mask->n, c->n);
-      fflush(stderr);
-      exit(1);
+      REprintf("[%s:%d] mask (N=%"PRIu64") and query (N=%"PRIu64") are of different lengths.\n", __func__, __LINE__, c_mask->n, c->n);
+      error("Abort.");
     }
 
     if (!c_mask->aux) fmt2_set_aux(c_mask);
@@ -293,9 +287,8 @@ static stats_t* summarize1_queryfmt2(
     free(nq); free(nm);
     
   } else {                      // other masks
-    fprintf(stderr, "[%s:%d] Mask format %c unsupported.\n", __func__, __LINE__, c_mask->fmt);
-    fflush(stderr);
-    exit(1);
+    REprintf("[%s:%d] Mask format %c unsupported.\n", __func__, __LINE__, c_mask->fmt);
+    error("Abort.");
   }
   return st;
 }
@@ -326,9 +319,8 @@ static stats_t* summarize1_queryfmt3(
     st = calloc(1, sizeof(stats_t));
     st[0].n_u = c->n;
     if (c_mask->n != c->n) {
-      fprintf(stderr, "[%s:%d] mask (N=%"PRIu64") and query (N=%"PRIu64") are of different lengths.\n", __func__, __LINE__, c_mask->n, c->n);
-      fflush(stderr);
-      exit(1);
+      REprintf("[%s:%d] mask (N=%"PRIu64") and query (N=%"PRIu64") are of different lengths.\n", __func__, __LINE__, c_mask->n, c->n);
+      error("Abort.");
     }
     for (uint64_t i=0; i<c->n; ++i) {
       uint64_t mu = f3_get_mu(c, i);
@@ -349,9 +341,8 @@ static stats_t* summarize1_queryfmt3(
     st = calloc(1, sizeof(stats_t));
     st[0].n_u = c->n;
     if (c_mask->n != c->n) {
-      fprintf(stderr, "[%s:%d] mask (N=%"PRIu64") and query (N=%"PRIu64") are of different lengths.\n", __func__, __LINE__, c_mask->n, c->n);
-      fflush(stderr);
-      exit(1);
+      REprintf("[%s:%d] mask (N=%"PRIu64") and query (N=%"PRIu64") are of different lengths.\n", __func__, __LINE__, c_mask->n, c->n);
+      error("Abort.");
     }
     for (uint64_t i=0; i<c->n; ++i) {
       uint64_t mu = f3_get_mu(c, i);
@@ -369,9 +360,8 @@ static stats_t* summarize1_queryfmt3(
   } else if (c_mask->fmt == '2') { // state mask
     
     if (c_mask->n != c->n) {
-      fprintf(stderr, "[%s:%d] mask (N=%"PRIu64") and query (N=%"PRIu64") are of different lengths.\n", __func__, __LINE__, c_mask->n, c->n);
-      fflush(stderr);
-      exit(1);
+      REprintf("[%s:%d] mask (N=%"PRIu64") and query (N=%"PRIu64") are of different lengths.\n", __func__, __LINE__, c_mask->n, c->n);
+      error("Abort.");
     }
     if (!c_mask->aux) fmt2_set_aux(c_mask);
     f2_aux_t *aux = (f2_aux_t*) c_mask->aux;
@@ -382,9 +372,8 @@ static stats_t* summarize1_queryfmt3(
       uint64_t index = f2_get_uint64(c_mask, i);
       uint64_t mu = f3_get_mu(c, i);
       if (index >= (*n_st)) {
-        fprintf(stderr, "[%s:%d] State data is corrupted.\n", __func__, __LINE__);
-        fflush(stderr);
-        exit(1);
+        REprintf("[%s:%d] State data is corrupted.\n", __func__, __LINE__);
+        error("Abort.");
       }
       if (mu) {
         st[index].sum_depth += MU2cov(mu);
@@ -408,9 +397,8 @@ static stats_t* summarize1_queryfmt3(
     }
     
   } else {                      // other masks
-    fprintf(stderr, "[%s:%d] Mask format %c unsupported.\n", __func__, __LINE__, c_mask->fmt);
-    fflush(stderr);
-    exit(1);
+    REprintf("[%s:%d] Mask format %c unsupported.\n", __func__, __LINE__, c_mask->fmt);
+    error("Abort.");
   }
   return st;
 }
@@ -437,9 +425,8 @@ static stats_t* summarize1_queryfmt6(
   } else if (c_mask->fmt <= '1') { // binary mask
 
     if (c_mask->n != c->n) {
-      fprintf(stderr, "[%s:%d] mask (N=%"PRIu64") and query (N=%"PRIu64") are of different lengths.\n", __func__, __LINE__, c_mask->n, c->n);
-      fflush(stderr);
-      exit(1);
+      REprintf("[%s:%d] mask (N=%"PRIu64") and query (N=%"PRIu64") are of different lengths.\n", __func__, __LINE__, c_mask->n, c->n);
+      error("Abort.");
     }
     
     *n_st = 1;
@@ -460,9 +447,8 @@ static stats_t* summarize1_queryfmt6(
   } else if (c_mask->fmt == '6') { // binary mask with universe
 
     if (c_mask->n != c->n) {
-      fprintf(stderr, "[%s:%d] mask (N=%"PRIu64") and query (N=%"PRIu64") are of different lengths.\n", __func__, __LINE__, c_mask->n, c->n);
-      fflush(stderr);
-      exit(1);
+      REprintf("[%s:%d] mask (N=%"PRIu64") and query (N=%"PRIu64") are of different lengths.\n", __func__, __LINE__, c_mask->n, c->n);
+      error("Abort.");
     }
     
     *n_st = 1;
@@ -483,9 +469,8 @@ static stats_t* summarize1_queryfmt6(
   } else if (c_mask->fmt == '2') { // state mask
 
     if (c_mask->n != c->n) {
-      fprintf(stderr, "[%s:%d] mask (N=%"PRIu64") and query (N=%"PRIu64") are of different lengths.\n", __func__, __LINE__, c_mask->n, c->n);
-      fflush(stderr);
-      exit(1);
+      REprintf("[%s:%d] mask (N=%"PRIu64") and query (N=%"PRIu64") are of different lengths.\n", __func__, __LINE__, c_mask->n, c->n);
+      error("Abort.");
     }
     if (!c_mask->aux) fmt2_set_aux(c_mask);
     f2_aux_t *aux = (f2_aux_t*) c_mask->aux;
@@ -495,9 +480,8 @@ static stats_t* summarize1_queryfmt6(
     for (uint64_t i=0; i<c->n; ++i) {
       uint64_t index = f2_get_uint64(c_mask, i);
       if (index >= (*n_st)) {
-        fprintf(stderr, "[%s:%d] State data is corrupted.\n", __func__, __LINE__);
-        fflush(stderr);
-        exit(1);
+        REprintf("[%s:%d] State data is corrupted.\n", __func__, __LINE__);
+        error("Abort.");
       }
       if (FMT6_IN_UNI(*c,i)) {
         nu++;
@@ -522,9 +506,8 @@ static stats_t* summarize1_queryfmt6(
     }
     
   } else {                      // other masks
-    fprintf(stderr, "[%s:%d] Mask format %c unsupported.\n", __func__, __LINE__, c_mask->fmt);
-    fflush(stderr);
-    exit(1);
+    REprintf("[%s:%d] Mask format %c unsupported.\n", __func__, __LINE__, c_mask->fmt);
+    error("Abort.");
   }
   return st;
 }
@@ -539,9 +522,8 @@ static stats_t* summarize1(cdata_t *c, cdata_t *c_mask, uint64_t *n_st, char *sm
   } else if (c->fmt == '6') {
     return summarize1_queryfmt6(c, c_mask, n_st, sm, sq, config);
   } else {
-    fprintf(stderr, "[%s:%d] Query format %c unsupported.\n", __func__, __LINE__, c->fmt);
-    fflush(stderr);
-    exit(1);
+    REprintf("[%s:%d] Query format %c unsupported.\n", __func__, __LINE__, c->fmt);
+    error("Abort.");
   }
 }
 
@@ -618,11 +600,6 @@ void main_summary1(
   for (uint64_t kq=0;;++kq) {
     cdata_t c_qry = read_cdata1(&cf_qry);
     if (c_qry.n == 0) break;
-    /* if (snames_qry.n && kq >= (unsigned) snames_qry.n) { */
-    /*   fprintf(stderr, "[%s:%d] More data (N=%"PRIu64") found than specified in the index file (N=%d).\n", __func__, __LINE__, kq+1, snames_qry.n); */
-    /*   fflush(stderr); */
-    /*   exit(1); */
-    /* } */
     if (c_qry.fmt == '7') { // skip format 7
       free_cdata(&c_qry); c_qry.s = NULL;
       continue;
@@ -646,9 +623,8 @@ void main_summary1(
         }
       } else {                /* mask is seekable */
         if (bgzf_seek(cf_mask.fh, 0, SEEK_SET)!=0) {
-          fprintf(stderr, "[%s:%d] Cannot seek mask.\n", __func__, __LINE__);
-          fflush(stderr);
-          exit(1);
+          REprintf("[%s:%d] Cannot seek mask.\n", __func__, __LINE__);
+          error("Abort.");
         }
         for (uint64_t km=0;;++km) {
           cdata_t c_mask = read_cdata1(&cf_mask);

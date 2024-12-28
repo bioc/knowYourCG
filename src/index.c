@@ -8,7 +8,7 @@ char *get_fname_index(const char *fname_cx) {
   char *fname_index = NULL;
   fname_index = malloc(strlen(fname_cx) + strlen(".idx") + 1);
   if (fname_index == NULL) {
-    printf("Failed to allocate memory for index file name\n");
+    REprintf("Failed to allocate memory for index file name\n");
     return NULL;
   }
   strcpy(fname_index, fname_cx);
@@ -19,13 +19,12 @@ char *get_fname_index(const char *fname_cx) {
 index_t* loadIndex(char* fname_index) {
   gzFile file = wzopen(fname_index, 0);
   if (file == NULL) {
-    /* fprintf(stderr, "Failed to open index file: %s\n", fname_index); */
     return NULL;
   }
 
   index_t* idx = kh_init(index);
   if (idx == NULL) {
-    printf("Failed to create hash table\n");
+    REprintf("Failed to create hash table\n");
     wzclose(file);
     return NULL;
   }
@@ -39,7 +38,7 @@ index_t* loadIndex(char* fname_index) {
         int ret;
         khiter_t k = kh_put(index, idx, sname, &ret);
         if (ret == -1) {
-          printf("Failed to insert value into hash table\n");
+          REprintf("Failed to insert value into hash table\n");
           wzclose(file);
           free(line);
           kh_destroy(index, idx);
@@ -74,14 +73,14 @@ static int64_t last_address(index_t *idx) {
 
 index_t *insert_index(index_t *idx, char *sname, int64_t addr) {
   if (getIndex(idx, sname) >= 0) {
-    fprintf(stderr, "[Error] Sample name %s already exists in index.\n", sname);
-    exit(1);
+    REprintf("[Error] Sample name %s already exists in index.\n", sname);
+    error("Abort.");
   }
   int ret;
   khiter_t k = kh_put(index, idx, sname, &ret);
   if (ret == -1) {
-    printf("Failed to insert value into hash table\n");
-    exit(1);
+    REprintf("Failed to insert value into hash table\n");
+    error("Abort.");
   }
   kh_value(idx, k) = addr;
   return idx;
@@ -94,7 +93,9 @@ static index_t* append_index(index_t *idx, cfile_t *cf, char* sname_to_append) {
   if (kh_size(idx) == 0) {      /* first item in index */
     addr = bgzf_tell(cf->fh);
   } else {
-    assert(bgzf_seek(cf->fh, last_address(idx), SEEK_SET) == 0);
+    if (bgzf_seek(cf->fh, last_address(idx), SEEK_SET) != 0) {
+      error("Cannot seek using index.");
+    }
     read_cdata2(cf, &c);         /* read past the last c data block */
     addr = bgzf_tell(cf->fh);
   }
@@ -102,7 +103,7 @@ static index_t* append_index(index_t *idx, cfile_t *cf, char* sname_to_append) {
   if (c.n > 0) {
     idx = insert_index(idx, sname_to_append, addr);
   } else {
-    fprintf(stderr, "Failed to detect additional data.\n");
+    REprintf("Failed to detect additional data.\n");
   }
   return idx;
 }
@@ -185,28 +186,26 @@ void writeIndex(FILE *fp, index_t *idx) {
 }
   
 static int usage(void) {
-  fprintf(stderr, "\n");
-  fprintf(stderr, "Usage: yame index [options] <in.cx>\n");
-  fprintf(stderr, "The index file name default to <in.cx>.idx\n");
-  fprintf(stderr, "\n");
-  fprintf(stderr, "Options:\n");
-  fprintf(stderr, "    -s [file path]   tab-delimited sample name list (use first column) \n");
-  fprintf(stderr, "    -1 [sample name] add one sample to the end of the index\n");
-  fprintf(stderr, "    -c               output index to console\n");
-  fprintf(stderr, "    -h               This help\n");
-  fprintf(stderr, "\n");
+  REprintf("\n");
+  REprintf("Usage: yame index [options] <in.cx>\n");
+  REprintf("The index file name default to <in.cx>.idx\n");
+  REprintf("\n");
+  REprintf("Options:\n");
+  REprintf("    -s [file path]   tab-delimited sample name list (use first column) \n");
+  REprintf("    -1 [sample name] add one sample to the end of the index\n");
+  REprintf("    -h               This help\n");
+  REprintf("\n");
 
   return 1;
 }
 
 int main_index(int argc, char *argv[]) {
 
-  int c0, console = 0;
+  int c0 = 0;
   char *fname_snames = NULL;
   char *sname_to_append = NULL;
-  while ((c0 = getopt(argc, argv, "cs:1:h"))>=0) {
+  while ((c0 = getopt(argc, argv, "s:1:h"))>=0) {
     switch (c0) {
-    case 'c': console = 1; break;
     case 's': fname_snames = strdup(optarg); break;
     case '1': sname_to_append = strdup(optarg); break;
     case 'h': return usage(); break;
@@ -234,10 +233,9 @@ int main_index(int argc, char *argv[]) {
     }
 
     FILE *out;
-    if (console) out = stdout;
-    else out = fopen(fname_index, "w");
+    out = fopen(fname_index, "w");
     writeIndex(out, idx);
-    if (!console) fclose(out);
+    fclose(out);
     
   } else {                      /* index all samples */
     
@@ -249,9 +247,8 @@ int main_index(int argc, char *argv[]) {
       int64_t addr = bgzf_tell(cf.fh);
       for (int i=0; i< snames.n; ++i) {
         if (!read_cdata2(&cf, &c)) {
-          fprintf(stderr, "[Error] Data is shorter than the sample name list.\n");
-          fflush(stderr);
-          exit(1);
+          REprintf("[Error] Data is shorter than the sample name list.\n");
+          error("Abort.");
         }
         insert_index(idx, snames.s[i], addr);
         addr = bgzf_tell(cf.fh);
@@ -274,12 +271,10 @@ int main_index(int argc, char *argv[]) {
       }
     }
     
-    FILE *out;
-    if (console) out = stdout;
-    else out = fopen(fname_index, "w");
+    FILE *out = fopen(fname_index, "w");
     writeIndex(out, idx);
-    if (!console) fclose(out);
-
+    fclose(out);
+    
     if (snames.n >0) {
       cleanSampleNames(&snames);
     } else if (n) {

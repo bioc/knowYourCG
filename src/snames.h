@@ -30,10 +30,9 @@ static inline snames_t loadSampleNames(char* fname_snames, int fatal) {
   } else {
     fp = gzopen(fname_snames, "r");
     if (!fp && fatal) {
-      fprintf(stderr, "[%s:%d] Fatal, cannot open file: %s\n",
+      REprintf("[%s:%d] Fatal, cannot open file: %s\n",
               __func__, __LINE__, fname_snames);
-      fflush(stderr);
-      exit(1);
+      error("Abort.");
     }
   }
   
@@ -45,9 +44,8 @@ static inline snames_t loadSampleNames(char* fname_snames, int fatal) {
     if (line_get_field(line, 0, "\t", &sname)) {
       snames.s = realloc(snames.s, sizeof(*(snames.s)) * (snames.n + 1));
       if (snames.s == NULL) {
-        fprintf(stderr, "Failed to allocate memory\n");
-        fflush(stderr);
-        exit(1);
+        REprintf("Failed to allocate memory\n");
+        error("Abort.");
       }
       snames.s[snames.n] = sname;
       snames.n++;

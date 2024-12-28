@@ -35,7 +35,7 @@ details.  https://zhou-lab.github.io/YAME/.
 
 # QUICK START
 
-```{r seq1, fig.width=5, fig.height=5, message=FALSE, eval=FALSE}
+```{r seq1, fig.width=5, fig.height=5, message=FALSE}
 library(knowYourCG)
 
 # Download query and knowledgebase datasets:
@@ -51,8 +51,6 @@ download.file(query_url, destfile = query)
 res = testEnrichment(query, knowledgebase)
 KYCG_plotDot(res, short_label=TRUE)
 ```
-
-<img src="figures/seq1.png" alt="testEnrichment result" width="300">
 
 # KNOWLEDGEBASES
 

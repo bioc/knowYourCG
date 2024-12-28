@@ -1,6 +1,7 @@
 #ifndef _CDATA_H
 #define _CDATA_H
 
+#include <R.h>
 #include <stdint.h>
 #include <math.h>
 #include <stdio.h>
@@ -143,9 +144,8 @@ cdata_t fmt7_sliceToMask(cdata_t *cr, cdata_t *c_mask);
 static inline void slice(cdata_t *c, uint64_t beg, uint64_t end, cdata_t *c_sliced) {
 
   if (c->compressed) {
-    fprintf(stderr, "[%s:%d] Cannot slice compressed data.\n", __func__, __LINE__);
-    fflush(stderr);
-    exit(1);
+    REprintf("[%s:%d] Cannot slice compressed data.\n", __func__, __LINE__);
+    error("Abort.");
   }
   if (end > c->n-1) end = c->n-1;
   if (end < beg) wzfatal("Slicing negative span.");

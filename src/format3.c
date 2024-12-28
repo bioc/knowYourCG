@@ -38,9 +38,8 @@ static uint64_t unpack_value(uint8_t *data, uint8_t unit) {
 // TODO: add fitMU here to be safe
 static void f3_pack_mu(uint8_t *data, uint64_t M, uint64_t U, uint8_t unit) {
   if (!unit) {
-    fprintf(stderr, "[%s:%d] Unknown unit size.\n", __func__, __LINE__);
-    fflush(stderr);
-    exit(1);
+    REprintf("[%s:%d] Unknown unit size.\n", __func__, __LINE__);
+    error("Abort.");
   }
   pack_value(data, (M<<(unit*4)) | U, unit);
 }
@@ -83,8 +82,7 @@ cdata_t* fmt3_read_raw(char *fname, uint8_t unit, int verbose) {
   free(line);
   wzclose(fh);
   if (verbose) {
-    fprintf(stderr, "[%s:%d] Vector of length %llu loaded\n", __func__, __LINE__, n);
-    fflush(stderr);
+    REprintf("[%s:%d] Vector of length %llu loaded\n", __func__, __LINE__, n);
   }
   cdata_t *c = calloc(sizeof(cdata_t),1);
   c->s = s;

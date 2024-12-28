@@ -40,9 +40,8 @@ static void append_loc(uint64_t loc, uint8_t **s, uint64_t *n) {
     (*s)[*n] |= 0xc0;
     (*n) += 8;
   } else {
-    fprintf(stderr, "[%s:%d] Inter-loci distance exceeds maximum: %"PRIu64"\n", __func__, __LINE__, loc);
-    fflush(stderr);
-    exit(1);
+    REprintf("[%s:%d] Inter-loci distance exceeds maximum: %"PRIu64"\n", __func__, __LINE__, loc);
+    error("Abort.");
   }
 }
 
@@ -81,8 +80,7 @@ cdata_t *fmt7_read_raw(char *fname, int verbose) {
     free_fields(fields, nfields);
   }
   if (verbose) {
-    fprintf(stderr, "[%s:%d] Vector of length %llu loaded\n", __func__, __LINE__, n);
-    fflush(stderr);
+    REprintf("[%s:%d] Vector of length %llu loaded\n", __func__, __LINE__, n);
   }
   
   if (chrm) free(chrm);
@@ -166,17 +164,15 @@ chrmlocs_t fmt7_decompress(cdata_t *c) {
 // beg and end are both 0-based
 cdata_t fmt7_sliceToBlock(cdata_t *cr, uint64_t beg, uint64_t end) {
   if (cr->fmt != '7') {
-    fprintf(stderr, "[%s:%d] Expect format 7 but got %c.\n", __func__, __LINE__, cr->fmt);
-    fflush(stderr);
-    exit(1);
+    REprintf("[%s:%d] Expect format 7 but got %c.\n", __func__, __LINE__, cr->fmt);
+    error("Abort.");
   }
   
   uint64_t n0 = fmt7_data_length(cr);
   if (end > n0-1) end = n0-1; // 0-base
   if (beg > n0-1) {
-    fprintf(stderr, "[%s:%d] Begin (%"PRIu64") is bigger than the data vector size (%"PRIu64").\n", __func__, __LINE__, beg, n0);
-    fflush(stderr);
-    exit(1);
+    REprintf("[%s:%d] Begin (%"PRIu64") is bigger than the data vector size (%"PRIu64").\n", __func__, __LINE__, beg, n0);
+    error("Abort.");
   }
 
   row_reader_t rdr = {0};
@@ -199,9 +195,8 @@ cdata_t fmt7_sliceToBlock(cdata_t *cr, uint64_t beg, uint64_t end) {
     i++;
   }
   if (n_rec != end - beg + 1) {
-    fprintf(stderr, "[%s:%d] row slicing has inconsistent dimension (n: %"PRIu64", expected: %"PRIu64")\n", __func__, __LINE__, n_rec, end - beg + 1);
-    fflush(stderr);
-    exit(1);
+    REprintf("[%s:%d] row slicing has inconsistent dimension (n: %"PRIu64", expected: %"PRIu64")\n", __func__, __LINE__, n_rec, end - beg + 1);
+    error("Abort.");
   }
   cr2.unit = cr->unit;
   cr2.fmt = cr->fmt;

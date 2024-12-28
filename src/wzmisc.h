@@ -6,6 +6,8 @@
 #include <ctype.h>
 #include <string.h>
 #include <stdio.h>
+#include <R.h>
+#include <Rinternals.h>
 
 /* utility function for freeing character array */
 static inline void free_char_array(char **char_array, int n) {
@@ -28,13 +30,18 @@ static inline char *strcpy_realloc(char *dest, char *src) {
 }
 
 /* Exit with message */
+/* static inline void wzfatal(const char *msg, ...) { */
+/*   va_list args; */
+/*   va_start(args, msg); */
+/*   vfprintf(stderr, msg, args); */
+/*   va_end (args); */
+/*   fflush(stderr); */
+/*   exit(EXIT_FAILURE); */
+/* } */
+
 static inline void wzfatal(const char *msg, ...) {
-  va_list args;
-  va_start(args, msg);
-  vfprintf(stderr, msg, args);
-  va_end (args);
-  fflush(stderr);
-  exit(EXIT_FAILURE);
+  REprintf("Error: %s\n", msg);
+  error("An error occurred.");
 }
 
 static inline void wzfread(void *ptr, size_t size, size_t count, FILE *stream) {
@@ -62,9 +69,8 @@ static inline void ensure_number(char *s) {
   int i;
   for (i=0;s[i];++i) {
     if (!isdigit(s[i]) && s[i]!='.') {
-      fprintf(stderr, "[%s:%d] Trying to convert nondigit string to number: %s\n", __func__, __LINE__, s);
-      fflush(stderr);
-      exit(1);
+      REprintf("[%s:%d] Trying to convert nondigit string to number: %s\n", __func__, __LINE__, s);
+      error("Abort.");
     }
   }
 }
@@ -75,9 +81,8 @@ static inline void ensure_number2(char *s) {
   for (i=0;s[i];++i) {
     if (i==0 && s[0] == '-') continue;
     if (!isdigit(s[i]) && s[i]!='.') {
-      fprintf(stderr, "[%s:%d] Trying to convert nondigit string to number: %s\n", __func__, __LINE__, s);
-      fflush(stderr);
-      exit(1);
+      REprintf("[%s:%d] Trying to convert nondigit string to number: %s\n", __func__, __LINE__, s);
+      error("Abort.");
     }
   }
 }

@@ -40,6 +40,7 @@ set corresponding to the distance of the nearest transcriptional start site
 (TSS) to each probe.
 
 ```{r ky21, run-test-data, echo=TRUE, eval=TRUE, message=FALSE}
+library(knowYourCG)
 query <- getDBs("KYCG.MM285.designGroup")[["TSS"]]
 ```
 

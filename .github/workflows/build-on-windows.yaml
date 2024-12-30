@@ -2,9 +2,8 @@ name: Build on Windows
 
 on:
   push:
-    branches:
-      - devel
-  pull_request:
+    paths:
+      - DESCRIPTION
 
 jobs:
   build-windows:
@@ -13,7 +12,6 @@ jobs:
       matrix:
         config:
           - { os: windows-latest, r: 'devel' }
-          - { os: ubuntu-latest, r: 'devel' }
 
     steps:
       - name: Checkout code

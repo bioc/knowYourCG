@@ -12,7 +12,7 @@ Description: KnowYourCG (KYCG) is a supervised learning framework designed for
              supervised screenings of diverse biological and technical
              influences, including sequence motifs, transcription factor
              binding, histone modifications, replication timing,
-             cell-type-specific methylation, and trait
+             cell-type-specific methylation, and trait-epigenome
              associations. KnowYourCG addresses the challenges of data
              sparsity in various methylation datasets, including low-pass
              Nanopore sequencing, single-cell DNA methylomes,

@@ -10,13 +10,17 @@
 <!-- Devel: [![Bioconductor Build Status (devel)](https://bioconductor.org/shields/build/devel/bioc/knowYourCG.svg)](https://bioconductor.org/checkResults/devel/bioc-LATEST/knowYourCG) -->
 
 
-# KnowYourCG (KYCG)
-## Functional analysis of DNA methylome datasets
+# KnowYourCG (Supervised Learning of Sparse DNA Methylome Data)
 
 ## Install knowYourCG
 
+Release version can be installed from Bioconductor
+```r
+BiocManager::install("knowYourCG")
+```
+
 Development version can be installed from github.
-```{r, eval=FALSE}
+```r
 BiocManager::install('zhou-lab/knowYourCG')
 ```
 

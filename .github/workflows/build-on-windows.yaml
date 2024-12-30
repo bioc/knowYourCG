@@ -14,7 +14,6 @@ jobs:
         config:
           - { os: windows-latest, r: 'devel' }
           - { os: ubuntu-latest, r: 'devel' }
-          - { os: macOS-latest, r: 'devel' }
 
     steps:
       - name: Checkout code

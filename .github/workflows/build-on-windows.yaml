@@ -42,5 +42,5 @@ jobs:
       # Step 5: Build the package
       - name: Build the package
         shell: cmd
-        run: R CMD build .
+        run: R CMD build . --no-build-vignettes
 

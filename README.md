@@ -4,8 +4,8 @@
 
 [![last commit](https://img.shields.io/github/last-commit/zhou-lab/knowYourCG.svg?style=flat-square)](https://github.com/zhou-lab/knowYourCG/commits/devel)
 [![CI Status](https://github.com/zhou-lab/knowYourCG/actions/workflows/build-on-windows.yaml/badge.svg)](https://github.com/zhou-lab/knowYourCG/actions/workflows/build-on-windows.yaml)
-Release: [![Bioconductor Build Status (release)](https://bioconductor.org/shields/build/release/bioc/knowYourCG.svg)](https://bioconductor.org/checkResults/release/bioc-LATEST/knowYourCG)
-Devel: [![Bioconductor Build Status (devel)](https://bioconductor.org/shields/build/devel/bioc/knowYourCG.svg)](https://bioconductor.org/checkResults/devel/bioc-LATEST/knowYourCG)
+<!-- Release: [![Bioconductor Build Status (release)](https://bioconductor.org/shields/build/release/bioc/knowYourCG.svg)](https://bioconductor.org/checkResults/release/bioc-LATEST/knowYourCG) -->
+<!-- Devel: [![Bioconductor Build Status (devel)](https://bioconductor.org/shields/build/devel/bioc/knowYourCG.svg)](https://bioconductor.org/checkResults/devel/bioc-LATEST/knowYourCG) -->
 
 
 # knowYourCG - Functional analysis of DNA methylome datasets

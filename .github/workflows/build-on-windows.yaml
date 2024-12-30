@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-windows:
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.config.os }}
     strategy:
       matrix:
         config:
@@ -37,7 +37,7 @@ jobs:
 
       - name: Build the package
         shell: cmd
-        run: R CMD build . --no-build-vignettes
+        run: R CMD build .
 
       - name: Run tests
         run: R CMD check *.tar.gz --no-manual

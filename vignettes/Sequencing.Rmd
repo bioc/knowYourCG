@@ -35,7 +35,8 @@ details.  https://zhou-lab.github.io/YAME/.
 
 # QUICK START
 
-```{r seq1, fig.width=5, fig.height=5, message=FALSE}
+```{r seq1, fig.width=5, fig.height=5, message=FALSE, eval=.Platform$OS.type!="windows"}
+# Code that should run only on non-Windows systems
 library(knowYourCG)
 
 # Download query and knowledgebase datasets:

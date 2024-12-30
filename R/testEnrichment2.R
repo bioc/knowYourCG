@@ -23,6 +23,9 @@ testEnrichment2 <- function(
     query_fn, knowledge_fn, universe_fn=NULL, alternative="greater") {
 
     stopifnot(is.character(query_fn), is.character(knowledge_fn))
+    if (.Platform$OS.type == "windows") {
+        stop("Testing sequencing data does not support Windows.")
+    }
     yame_result <- .Call("yame_summary_cfunc", query_fn, knowledge_fn)
     
     ## args <- c("summary", "-m", knowledgebase_fn, query_fn)

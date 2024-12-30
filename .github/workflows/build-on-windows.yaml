@@ -29,5 +29,6 @@ jobs:
 
       # Step 4: Build the package
       - name: Build the package
-        run: R CMD build .
+        shell: cmd
+        run: R CMD BUILD .
 

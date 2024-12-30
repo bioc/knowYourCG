@@ -39,4 +39,5 @@ jobs:
         run: R CMD build .
 
       - name: Run tests
+        shell: cmd
         run: R CMD check *.tar.gz --no-manual

@@ -2,8 +2,10 @@
 <img src="https://github.com/user-attachments/assets/ee2328b9-5516-4b28-9fce-9e456534b3b1" width="240">
 </p>
 
+<div align="center">
 [![last commit](https://img.shields.io/github/last-commit/zhou-lab/knowYourCG.svg?style=flat-square)](https://github.com/zhou-lab/knowYourCG/commits/devel)
 [![CI Status](https://github.com/zhou-lab/knowYourCG/actions/workflows/build-on-windows.yaml/badge.svg)](https://github.com/zhou-lab/knowYourCG/actions/workflows/build-on-windows.yaml)
+</div>
 <!-- Release: [![Bioconductor Build Status (release)](https://bioconductor.org/shields/build/release/bioc/knowYourCG.svg)](https://bioconductor.org/checkResults/release/bioc-LATEST/knowYourCG) -->
 <!-- Devel: [![Bioconductor Build Status (devel)](https://bioconductor.org/shields/build/devel/bioc/knowYourCG.svg)](https://bioconductor.org/checkResults/devel/bioc-LATEST/knowYourCG) -->
 

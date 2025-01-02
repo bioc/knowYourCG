@@ -16,9 +16,11 @@
 #' @useDynLib knowYourCG, .registration = TRUE
 #' @export
 #' @examples
+#' if (.Platform$OS.type!="windows") {
 #' kfn = system.file("extdata", "chromhmm.cm", package = "knowYourCG")
 #' qfn = system.file("extdata", "onecell.cg", package = "knowYourCG")
 #' testEnrichment2(qfn, kfn)
+#' }
 testEnrichment2 <- function(
     query_fn, knowledge_fn, universe_fn=NULL, alternative="greater") {
 

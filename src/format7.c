@@ -33,7 +33,7 @@ static void append_loc(uint64_t loc, uint8_t **s, uint64_t *n) {
     (*s)[*n] = (0x80 | (loc>>8));
     (*s)[(*n)+1] = (loc & 0xff);
     (*n) += 2;
-  } else if (loc <= ((1ul<<62) - 1)) {
+  } else if (loc <= ((1ull<<62) - 1)) {
     *s = realloc(*s, (*n)+8);
     for (int i=0; i<8; ++i)
       (*s)[(*n)+i] = ((loc>>(8*(7-i)))&0xff);

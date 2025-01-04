@@ -42,7 +42,6 @@ index_t* loadIndex(char* fname_index) {
           wzclose(file);
           free(line);
           kh_destroy(index, idx);
-          free(idx);
           return NULL;
         }
         kh_value(idx, k) = strtoll(index_str, NULL, 10);

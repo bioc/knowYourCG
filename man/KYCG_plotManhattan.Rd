@@ -9,6 +9,8 @@ KYCG_plotManhattan(
   platform = NULL,
   genome = NULL,
   title = NULL,
+  rasterize = FALSE,
+  rasterize_thres = 3,
   label_min = 100,
   col = c("wheat1", "sienna3"),
   ylabel = "Value"
@@ -30,6 +32,10 @@ and provide the following argument
 to this function.}
 
 \item{title}{title for plot}
+
+\item{rasterize}{if true use ggrastr to rasterize non-significant data.}
+
+\item{rasterize_thres, }{the threshold of rasterize}
 
 \item{label_min}{Threshold above which data points will be labelled with
 Probe ID}

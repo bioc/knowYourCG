@@ -82,7 +82,7 @@ cdata_t* fmt3_read_raw(char *fname, uint8_t unit, int verbose) {
   free(line);
   wzclose(fh);
   if (verbose) {
-    REprintf("[%s:%d] Vector of length %llu loaded\n", __func__, __LINE__, n);
+    REprintf("[%s:%d] Vector of length %"PRIu64" loaded\n", __func__, __LINE__, n);
   }
   cdata_t *c = calloc(sizeof(cdata_t),1);
   c->s = s;

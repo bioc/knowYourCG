@@ -4,10 +4,7 @@
 ## }
 
 #' Test enrichment from YAME-compressed CG sets
-#' Concatenate Two Strings
-#'
-#' This function concatenates two strings using a C implementation.
-#'
+#' 
 #' @param query_fn File path to query
 #' @param knowledge_fn File path to knowledgebase
 #' @param universe_fn optional file path to universe

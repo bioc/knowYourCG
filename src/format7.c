@@ -80,7 +80,7 @@ cdata_t *fmt7_read_raw(char *fname, int verbose) {
     free_fields(fields, nfields);
   }
   if (verbose) {
-    REprintf("[%s:%d] Vector of length %llu loaded\n", __func__, __LINE__, n);
+    REprintf("[%s:%d] Vector of length %"PRIu64" loaded\n", __func__, __LINE__, n);
   }
   
   if (chrm) free(chrm);

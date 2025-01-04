@@ -2,8 +2,7 @@
 % Please edit documentation in R/testEnrichment2.R
 \name{testEnrichment2}
 \alias{testEnrichment2}
-\title{Test enrichment from YAME-compressed CG sets
-Concatenate Two Strings}
+\title{Test enrichment from YAME-compressed CG sets}
 \usage{
 testEnrichment2(
   query_fn,
@@ -25,10 +24,12 @@ testEnrichment2(
 A single concatenated string.
 }
 \description{
-This function concatenates two strings using a C implementation.
+Test enrichment from YAME-compressed CG sets
 }
 \examples{
+if (.Platform$OS.type!="windows") {
 kfn = system.file("extdata", "chromhmm.cm", package = "knowYourCG")
 qfn = system.file("extdata", "onecell.cg", package = "knowYourCG")
 testEnrichment2(qfn, kfn)
+}
 }

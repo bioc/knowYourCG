@@ -145,7 +145,7 @@ cdata_t* fmt2_read_raw(char *fname, int verbose) {
   memcpy(c->s + pos, data, data_n*sizeof(uint64_t));
 
   if (verbose) {
-    REprintf("[%s:%d] Vector of length %llu loaded\n", __func__, __LINE__, data_n);
+    REprintf("[%s:%d] Vector of length %"PRIu64" loaded\n", __func__, __LINE__, data_n);
   }
 
   free(data);

@@ -511,8 +511,11 @@ KYCG_plotPointRange <- function(result_list) {
 #' Probe ID
 #' @param col color
 #' @param ylabel y-axis label
+#' @param rasterize if true use ggrastr to rasterize non-significant data.
+#' @param rasterize_thres, the threshold of rasterize
 #' @return a ggplot object
-#' @importFrom GenomicRanges seqnames 
+#' @importFrom GenomicRanges seqnames
+#' @importFrom GenomicRanges end
 #' @importFrom tibble as_tibble
 #' @import ggrepel
 #' @import sesameData
@@ -523,6 +526,7 @@ KYCG_plotPointRange <- function(result_list) {
 #' @export
 KYCG_plotManhattan <- function(
     vals, platform = NULL, genome = NULL, title = NULL,
+    rasterize=FALSE, rasterize_thres = 3,
     label_min = 100, col = c("wheat1", "sienna3"), ylabel="Value") {
 
     stopifnot(is(vals, "numeric"))
@@ -539,26 +543,39 @@ KYCG_plotManhattan <- function(
         as.numeric(seqLength))[-length(seqLength)]), names(seqLength))
     midLength <- cumLength + seqLength/2
     SummarizedExperiment::mcols(gr)$pos <- cumLength[
-        as.character(seqnames(gr))] + end(gr)
+        as.character(seqnames(gr))] + GenomicRanges::end(gr)
     SummarizedExperiment::mcols(gr)$Probe_ID <- names(gr)
     
     df <- as_tibble(gr)
     df$seqnames <- factor(df$seqnames, levels=names(seqLength))
     requireNamespace("ggrepel")
-    ggplot(df, aes_string(x="pos", y="val")) + 
-        geom_point(aes_string(color="seqnames"), alpha=0.8, size=1.3) + 
-        ggrepel::geom_text_repel(data=df[df$val > label_min,],
-            aes_string(label="Probe_ID")) +
+    p <- ggplot(df, aes_string(x="pos", y="val", color="seqnames"))
+    if (rasterize) {
+        requireNamespace("ggrastr")
+        p <- p + ggrastr::rasterise(geom_point(
+            alpha=0.5, size=1,
+            data = df[df$val < rasterize_thres,]), dpi=600)
+    } else {
+        p <- p + geom_point(
+            alpha=0.5, size=1,
+            data = df[df$val < rasterize_thres,])
+    }
+    p <- p + geom_point(
+        alpha=0.8, size=1,
+        data = df[df$val >= rasterize_thres,])
+    p <- p + ggrepel::geom_text_repel(data=df[df$val > label_min,],
+        aes_string(label="Probe_ID")) +
         scale_color_manual(values = rep(col, length(seqLength))) +
         scale_x_continuous(labels = names(midLength), breaks= midLength) +
         scale_y_continuous(expand = c(0, 0)) +  
         theme_bw() +
-        theme( 
+        theme(
             legend.position="none",
             panel.border = element_blank(),
             panel.grid.major.x = element_blank(),
             panel.grid.minor.x = element_blank()
         ) + labs(title=title) + xlab("Chromosome") + ylab(ylabel)
+    p
 }
 
 #' Plot Set Enrichment
